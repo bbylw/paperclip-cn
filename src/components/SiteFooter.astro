@@ -111,23 +111,8 @@ const year = new Date().getFullYear();
       </nav>
     </div>
 
-    {/*
-      免责声明原来 12px 极暗灰里有 7 处加粗——满屏加粗等于没有强调。
-      现在只保留两处真正需要停顿的加粗，正文提到 4.9:1。
-    */}
-    <aside class="mt-12 max-w-4xl border-t border-ink-800 pt-6">
-      <h2 class="text-sm font-medium text-ink-100">非官方声明</h2>
-      <p class="mt-2 text-xs leading-relaxed text-ink-400">
-        本站是 Paperclip 的<strong class="font-medium text-ink-200">非官方社区中文翻译站</strong
-        >，与 {upstream.name} 无隶属关系。Paperclip 的名称、图形商标与官方站点内容归其所有者所有；本站代码以
-        <a href={links.license} target="_blank" rel="noreferrer noopener" class="link">MIT 协议</a
-        >发布，但该协议不授予任何商标许可。内容如有出入，
-        <strong class="font-medium text-ink-200">以官方仓库为准</strong>。
-      </p>
-    </aside>
-
     <div
-      class="mt-8 flex flex-col gap-2 border-t border-ink-800 pt-6 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between"
+      class="mt-12 flex flex-col gap-2 border-t border-ink-800 pt-6 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between"
     >
       <p>翻译与站点代码 © {year} Paperclip 中文社区翻译站贡献者 · MIT</p>
       <p>
