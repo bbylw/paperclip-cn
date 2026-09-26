@@ -5,11 +5,14 @@ import { links } from '../data/site';
 import Icon from './Icon.astro';
 ---
 
+{/*
+ * lead 不再复述下面 9 张卡的标题——那句话在 400px 内把 9 个标题又打了一遍，
+ * 零信息量。脚注从 11px 提到 12px/4.9:1，并收窄行宽避免横跨整屏。
+ */}
 <Section
   id="features"
-  eyebrow="FEATURES"
   title="功能特性"
-  lead="自带你的智能体、目标对齐、心跳机制、成本管控、多组织隔离、事项与审计、治理、组织架构图与移动端。"
+  lead="从接入智能体到成本管控，Paperclip 把经营一支 AI 团队需要的九件事收进一个控制平面。"
 >
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {
@@ -23,21 +26,19 @@ import Icon from './Icon.astro';
             <Icon name={feature.icon} class="size-5" />
           </span>
           <h3 class="mt-5 text-base font-medium text-ink-100">{feature.title}</h3>
-          <p class="mt-2.5 text-sm leading-relaxed text-ink-400">{feature.detail}</p>
+          <p class="mt-2 text-sm leading-relaxed text-ink-400">{feature.detail}</p>
         </article>
       ))
     }
   </div>
 
-  <p class="mt-6 text-xs leading-relaxed text-ink-500">
-    注：完整的<strong class="text-ink-300">工单系统</strong>（含 Asana / Linear / Jira 作为接入点）仍在
-    <a
-      href={links.roadmap}
-      target="_blank"
-      rel="noreferrer noopener"
-      class="text-ink-300 underline decoration-ink-600 underline-offset-4 transition hover:text-brand-300"
-      >路线图</a
-    >
-    中。上面的「事项与审计」指的是已交付的事项、评论、附件与审计日志能力。
-  </p>
+  <aside class="mt-6 max-w-3xl border-l-2 border-ink-700 pl-4" data-reveal>
+    <p class="text-xs leading-relaxed text-ink-400">
+      <strong class="font-medium text-ink-200">关于工单系统：</strong>
+      上面的「事项与审计」指的是已交付的事项、评论、附件与审计日志能力。完整的工单系统（含 Asana、Linear、Jira
+      作为接入点）仍在<a href={links.roadmap} target="_blank" rel="noreferrer noopener" class="link"
+        >路线图</a
+      >中。
+    </p>
+  </aside>
 </Section>

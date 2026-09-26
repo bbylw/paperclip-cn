@@ -75,8 +75,8 @@ paperclipai onboard --yes --bind tailnet`,
 export const requirements = [
   { label: 'Node.js', value: '24.11+' },
   { label: '包管理器', value: 'pnpm 9.15+' },
-  { label: '数据库', value: '内置 PostgreSQL（自动创建）' },
-  { label: '开发端口', value: 'API :3100 · 移动端 UI :3101' },
+  { label: '数据库', value: '内置 PostgreSQL' },
+  { label: '开发端口', value: '3100 / 3101' },
 ] as const;
 
 /** 排障：私有 npm 源导致 npx 解析到内网 registry 而报 E404 */

@@ -2,38 +2,38 @@
 import { agentRuntimes } from '../data/steps';
 ---
 
-<section id="agents" class="relative border-y border-ink-800/80 bg-ink-900/30 py-10">
-  <div class="shell">
-    <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
-      <div class="shrink-0 lg:w-44">
-        <p class="text-xs tracking-[0.25em] text-ink-500 uppercase">可接入的智能体</p>
-      </div>
+{/*
+ * 原来 6 张 logo 全部是链接，OpenClaw 跳 #quickstart、其余 5 个全跳 #architecture。
+ * 点击后落点相同，对访客毫无意义，只是制造了 6 个假的可点区域。
+ * 现在改为纯展示，logo 加 alt=""（名称就在下方文字里，避免读屏重复朗读）。
+ */}
+<section id="agents" class="border-y border-ink-800/70 py-10">
+  <div class="shell flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-8">
+    <p class="shrink-0 text-xs tracking-[0.2em] text-ink-400 uppercase lg:w-40">
+      可接入的智能体
+    </p>
 
-      <!-- 纯展示，不是链接：点击跳到 #architecture 对访客没有意义 -->
-      <ul class="grid grid-cols-3 gap-3 sm:grid-cols-6 lg:flex lg:flex-1 lg:items-center">
-        {
-          agentRuntimes.map((agent) => (
-            <li class="lg:flex-1">
-              <div class="flex flex-col items-center gap-2 rounded-xl border border-ink-800 bg-ink-900/60 px-3 py-4">
-                <img
-                  src={agent.logo}
-                  alt=""
-                  width="32"
-                  height="32"
-                  loading="lazy"
-                  decoding="async"
-                  class="size-8"
-                />
-                <span class="text-[11px] text-ink-400">{agent.name}</span>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
+    <ul class="grid flex-1 grid-cols-3 gap-2.5 sm:grid-cols-6">
+      {
+        agentRuntimes.map((agent) => (
+          <li class="flex flex-col items-center gap-2 rounded-xl border border-ink-800 px-3 py-3.5">
+            <img
+              src={agent.logo}
+              alt=""
+              width="28"
+              height="28"
+              loading="lazy"
+              decoding="async"
+              class="size-7 opacity-80"
+            />
+            <span class="text-xs text-ink-300">{agent.name}</span>
+          </li>
+        ))
+      }
+    </ul>
 
-      <p class="text-sm text-ink-400 lg:w-64">
-        <em>只要它能接收心跳信号，就算被录用。</em>
-      </p>
-    </div>
+    <p class="text-sm text-ink-300 lg:w-56 lg:text-right">
+      只要它能接收心跳信号，就算被录用。
+    </p>
   </div>
 </section>

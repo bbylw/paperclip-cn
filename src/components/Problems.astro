@@ -4,33 +4,43 @@ import { problems, differentiators } from '../data/problems';
 import Icon from './Icon.astro';
 ---
 
+{/*
+ * 「之前」一栏原来用 text-ink-500（1.82:1）+ line-through，几乎读不出来。
+ * 这个区块的全部价值就是左右对比，左边读不了等于区块失效。
+ * 现在左栏用 4.9:1 的 ink-400 + 红色 ✕，靠颜色而非「变暗」表达「这是问题」。
+ */}
 <Section
   id="problems"
-  eyebrow="BEFORE / AFTER"
   title="Paperclip 解决了哪些问题"
   lead="左边是你现在的日常，右边是接入 Paperclip 之后的样子。"
 >
   <div class="overflow-hidden rounded-2xl border border-ink-800">
     <div
-      class="hidden grid-cols-2 gap-px bg-ink-800 text-xs tracking-[0.2em] text-ink-500 uppercase md:grid"
+      class="hidden gap-px bg-ink-800 text-xs tracking-[0.18em] uppercase md:grid md:grid-cols-2"
     >
-      <p class="bg-ink-900 px-6 py-3">没有 Paperclip</p>
-      <p class="bg-ink-900 px-6 py-3">用了 Paperclip</p>
+      <p class="flex items-center gap-2 bg-ink-900 px-6 py-3 text-ink-400">
+        <span class="size-1.5 rounded-full bg-rose-500"></span>
+        没有 Paperclip
+      </p>
+      <p class="flex items-center gap-2 bg-ink-900 px-6 py-3 text-ink-400">
+        <span class="size-1.5 rounded-full bg-mint-500"></span>
+        用了 Paperclip
+      </p>
     </div>
     <ul class="grid gap-px bg-ink-800 md:grid-cols-2">
       {
         problems.map((pair, i) => (
           <li class="contents" data-reveal style={`--reveal-delay:${(i % 2) * 60}ms`}>
-            <div class="flex gap-3 bg-ink-900 p-5 sm:p-6">
-              <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-ink-800 text-ink-500">
+            <div class="flex items-start gap-3 bg-ink-900 p-5 sm:p-6">
+              <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-rose-500/12 text-rose-400">
                 <Icon name="x" class="size-3" size={12} />
               </span>
-              <p class="text-sm leading-relaxed text-ink-500 line-through decoration-ink-700">
+              <p class="text-sm leading-relaxed text-ink-400 line-through decoration-ink-600">
                 {pair.before}
               </p>
             </div>
-            <div class="flex gap-3 bg-ink-900 p-5 sm:p-6">
-              <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-mint-500/15 text-mint-400">
+            <div class="flex items-start gap-3 bg-ink-900 p-5 sm:p-6">
+              <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-mint-500/12 text-mint-400">
                 <Icon name="check" class="size-3" size={12} />
               </span>
               <p class="text-sm leading-relaxed text-ink-200">{pair.after}</p>
@@ -42,29 +52,35 @@ import Icon from './Icon.astro';
   </div>
 </Section>
 
+{/*
+ * 特别之处：原来是 2 列 × 边框容器 + 1px 中缝的「三线表」，
+ * 与紧邻的对照表、12 张子系统卡、路线图属于同一视觉家族，连续四屏无法区分。
+ * 而且 7 条排 2 列会留一个空格子，看起来像渲染失败。
+ *
+ * 现在改成无卡片的声明式版式：左侧大号序号 + 右侧标题正文，
+ * 行间只有 1px 细线。7 条正好填满 7 行，空格从根上消失。
+ */}
 <Section
   id="differentiators"
-  eyebrow="CRAFTED DETAILS"
   title="Paperclip 特别之处"
-  lead="Paperclip 把那些棘手的编排细节都做对了。"
+  lead="这些编排细节最容易做错，Paperclip 把它们做对了。"
 >
-  <ul class="grid gap-px overflow-hidden rounded-2xl border border-ink-800 bg-ink-950 md:grid-cols-2">
+  <ol class="border-t border-ink-800">
     {
       differentiators.map((item, i) => (
         <li
-          class="group bg-ink-900 p-6 transition hover:bg-ink-850"
+          class="group grid gap-x-6 gap-y-1 border-b border-ink-800 py-5 sm:grid-cols-[3.5rem_1fr] sm:py-6"
           data-reveal
-          style={`--reveal-delay:${(i % 2) * 60}ms`}
         >
-          <div class="flex items-center gap-2.5">
-            <span class="font-mono text-[11px] text-ink-600 group-hover:text-brand-400">
-              {String(i + 1).padStart(2, '0')}
-            </span>
+          <span class="font-mono text-sm leading-6 text-ink-400 tabular-nums transition-colors group-hover:text-brand-400">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div>
             <h3 class="text-base font-medium text-ink-100">{item.title}</h3>
+            <p class="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-400">{item.detail}</p>
           </div>
-          <p class="mt-3 pl-8 text-sm leading-relaxed text-ink-400">{item.detail}</p>
         </li>
       ))
     }
-  </ul>
+  </ol>
 </Section>

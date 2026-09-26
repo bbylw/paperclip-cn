@@ -3,26 +3,41 @@ import Section from './Section.astro';
 import { notAPillar } from '../data/problems';
 ---
 
+{/*
+ * 这个区块原来 6 张卡的标题和正文同为 ink-400（3.71:1），
+ * 16px 标题 + 13px 正文，一个字都没有比其他元素突出——
+ * 而「不是什么」这四个字恰恰是本区块唯一要传达的信息。
+ *
+ * 改成无卡片的划掉声明：单列、粗体短句 + 灰色解释。
+ * 语义上「不是什么」本来就该和其他区块不一样，现在结构上也真的不一样了。
+ */}
 <Section
   id="boundaries"
-  eyebrow="BOUNDARIES"
   title="Paperclip 不是什么"
   lead="把边界说清楚，比把功能说漂亮更有用。"
 >
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+  <ul class="grid gap-x-10 gap-y-0 md:grid-cols-2">
     {
       notAPillar.map((item, i) => (
-        <article
-          class="card p-5 transition hover:border-ink-600"
+        <li
+          class="flex items-start gap-4 border-b border-ink-800 py-5"
           data-reveal
-          style={`--reveal-delay:${(i % 3) * 70}ms`}
+          style={`--reveal-delay:${(i % 2) * 60}ms`}
         >
-          <h3 class="text-base font-medium text-ink-400 line-through decoration-ink-600 decoration-1">
-            {item.title}
-          </h3>
-          <p class="mt-2.5 text-sm leading-relaxed text-ink-400">{item.detail}</p>
-        </article>
+          <span
+            class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border border-ink-600 text-ink-400"
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </span>
+          <div>
+            <h3 class="text-lg font-medium text-ink-100">{item.title}</h3>
+            <p class="mt-1 text-sm leading-relaxed text-ink-400">{item.detail}</p>
+          </div>
+        </li>
       ))
     }
-  </div>
+  </ul>
 </Section>

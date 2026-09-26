@@ -2,6 +2,19 @@
 
 /* ==================================================================
    Design tokens
+   ------------------------------------------------------------------
+   色彩分两组，用途互不重叠：
+
+   1. 文字色  ink-100 ~ ink-400 —— 全部 ≥ WCAG AA
+        ink-100  15.9:1  大标题
+        ink-200  10.6:1  小标题 / 强调
+        ink-300   7.1:1  正文默认
+        ink-400   4.9:1  元信息 / 次要正文（AA 下限）
+   2. 装饰色  ink-500 ~ ink-900 —— 只用于边框、分隔线、表面。
+      ink-500 是 3.1:1，**仅限 ≥24px 大字**（如三步流程的 30px 序号）；
+      12–14px 的小序号必须用 ink-400，否则达不到 AA。
+
+   改色板时先跑 `bun run lint`，再对照上表核对对比度。
    ================================================================== */
 @theme {
   --font-sans:
@@ -10,31 +23,42 @@
   --font-mono:
     'JetBrains Mono Variable', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* 近黑冷色调表面 */
-  --color-ink-950: #08080c;
-  --color-ink-900: #0d0d13;
-  --color-ink-850: #121219;
-  --color-ink-800: #17171f;
-  --color-ink-700: #1f1f2a;
-  --color-ink-600: #2b2b38;
-  --color-ink-500: #3d3d4d;
-  --color-ink-400: #6b6b7d;
-  --color-ink-300: #9c9cad;
-  --color-ink-200: #c9c9d4;
-  --color-ink-100: #e9e9ef;
+  /* ---- 文字色（可读） ---- */
+  --color-ink-100: #ececf2; /* 15.9:1 */
+  --color-ink-200: #d2d2dd; /* 10.6:1 */
+  --color-ink-300: #a3a3b5; /*  7.1:1 */
+  --color-ink-400: #7e7e91; /*  4.9:1 */
 
-  /* 品牌橙（回形针金属暖调） */
+  /* ---- 装饰色（不可读） ---- */
+  --color-ink-500: #5e5e74; /*  3.1:1 — 仅限 ≥24px 大字 */
+  --color-ink-600: #3a3a48;
+  --color-ink-700: #262633;
+  --color-ink-800: #1b1b25;
+  --color-ink-850: #15151d;
+  --color-ink-900: #0e0e14;
+  --color-ink-950: #08080b;
+
+  /* 品牌橙。单一强调色，全站锁定。 */
+  --color-brand-200: #fed7aa;
   --color-brand-300: #fdba74;
   --color-brand-400: #fb923c;
   --color-brand-500: #f97316;
   --color-brand-600: #ea580c;
 
-  /* 辅助色：心跳 / 成本 / 治理 */
+  /* 语义色：仅用于状态标识，不做装饰 */
   --color-mint-300: #6ee7b7;
   --color-mint-400: #34d399;
   --color-mint-500: #10b981;
   --color-sky-400: #38bdf8;
   --color-violet-400: #a78bfa;
+  /* 「问题 / 不要」的唯一红色，与品牌橙同饱和度档 */
+  --color-rose-400: #fb7185;
+  --color-rose-500: #f43f5e;
+
+  /* 圆角：全站三档，不允许第四档 */
+  --radius-card: 1rem; /* 卡片 */
+  --radius-tile: 0.75rem; /* 小方块 / chip */
+  --radius-pill: 999px; /* 药丸 */
 
   --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
 }
@@ -59,13 +83,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    /* 固定头部 64px + 呼吸空间，锚点跳转时标题不被遮住 */
+    scroll-padding-top: 6rem;
     -webkit-text-size-adjust: 100%;
   }
 
   body {
     background-color: var(--color-ink-950);
-    color: var(--color-ink-200);
+    color: var(--color-ink-300);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -104,34 +129,80 @@
     }
   }
 
+  /* ---------- 表面 ---------- */
+  /* 全站唯一的卡片表面。渐变只做极轻的顶部提亮，不改变底色。 */
   .card {
     position: relative;
-    border-radius: 1rem;
+    border-radius: var(--radius-card);
     border: 1px solid var(--color-ink-700);
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0)) padding-box,
-      var(--color-ink-900);
+    background: var(--color-ink-900);
   }
 
+  /* 抬升态：只换边框色，不位移（位移会让整页网格抖动） */
   .card-hover {
     transition:
-      border-color 0.25s ease,
-      transform 0.25s ease,
-      background-color 0.25s ease;
+      border-color 0.2s ease,
+      background-color 0.2s ease;
   }
 
   .card-hover:hover {
-    border-color: color-mix(in oklab, var(--color-brand-500) 45%, var(--color-ink-700));
-    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-brand-500) 42%, var(--color-ink-600));
+    background-color: var(--color-ink-850);
   }
 
+  .card-hover:active {
+    background-color: var(--color-ink-800);
+  }
+
+  /* ---------- 按钮：全站只有两种 ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-tile);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    transition:
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn-primary {
+    background-color: var(--color-brand-500);
+    color: var(--color-ink-950);
+    font-weight: 500;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-brand-400);
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--color-ink-600);
+    color: var(--color-ink-200);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-ink-500);
+    background-color: var(--color-ink-850);
+  }
+
+  /* ---------- chip ---------- */
   .chip {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-ink-700);
-    background-color: rgb(255 255 255 / 0.02);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-ink-600);
+    background-color: var(--color-ink-850);
     padding: 0.25rem 0.625rem;
     font-size: 0.75rem;
     line-height: 1rem;
@@ -139,6 +210,49 @@
     white-space: nowrap;
   }
 
+  /* ---------- 序号 ---------- */
+  /* 用 ink-400（4.9:1）而非 ink-500：序号只有 12–14px，不属于「大字」，
+     用 ink-500 只有 3.1:1，达不到正文所需的 4.5:1。 */
+  .ordinal {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: var(--color-ink-400);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- 区块 eyebrow ---------- */
+  /* 只在少数关键区块使用；见 Section.astro 的使用约定 */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-brand-400);
+  }
+
+  /* ---------- 链接 ---------- */
+  /* 站内文字链接统一样式，替代散落的 underline + decoration-*。
+     CJK 字形撑满 em 框，4px 的固定偏移会让下划线切进字面，
+     所以用 em 单位随字号缩放，并压细线宽。 */
+  .link {
+    color: var(--color-ink-200);
+    text-decoration: underline;
+    text-decoration-color: var(--color-ink-600);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    transition:
+      color 0.15s ease,
+      text-decoration-color 0.15s ease;
+  }
+
+  .link:hover {
+    color: var(--color-brand-300);
+    text-decoration-color: var(--color-brand-500);
+  }
+
+  /* ---------- 渐变文字 ---------- */
   .text-gradient {
     background-image: linear-gradient(
       100deg,
@@ -154,21 +268,20 @@
 
   .grid-bg {
     background-image:
-      linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+      linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
     background-size: 64px 64px;
     -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 78%);
     mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 78%);
   }
 
-  /* ---------------- 路线图筛选按钮 ---------------- */
-  /* 选中态由 aria-pressed 驱动，JS 只需翻转这一个属性 */
+  /* ---------- 路线图筛选：选中态由 aria-pressed 驱动 ---------- */
   .roadmap-filter {
     display: inline-flex;
     min-height: 2.25rem;
     align-items: center;
     gap: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     border: 1px solid transparent;
     padding: 0.375rem 0.875rem;
     font-size: 0.75rem;
@@ -179,7 +292,7 @@
       color 0.2s ease;
   }
 
-  .roadmap-filter[aria-pressed='false']:hover {
+  .roadmap-filter:hover {
     border-color: var(--color-ink-600);
     background-color: var(--color-ink-850);
   }
@@ -192,16 +305,15 @@
   .roadmap-filter-count {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
-    color: var(--color-ink-500);
+    color: var(--color-ink-400);
   }
 
   .roadmap-filter[aria-pressed='true'] .roadmap-filter-count {
     color: color-mix(in oklab, var(--color-ink-950) 70%, transparent);
   }
 
-  /* ---------------- FAQ：原生 <details> 手风琴 ---------------- */
+  /* ---------- FAQ：原生 <details> 手风琴 ---------- */
   .faq-item > summary {
-    /* 去掉浏览器默认的三角标记，换成自定义箭头 */
     list-style: none;
   }
 
@@ -223,8 +335,8 @@
     place-items: center;
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-ink-700);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-ink-600);
     color: var(--color-ink-400);
     transition:
       transform 0.3s ease,
@@ -234,7 +346,7 @@
 
   .faq-item[open] .faq-marker {
     transform: rotate(180deg);
-    border-color: color-mix(in oklab, var(--color-brand-500) 60%, transparent);
+    border-color: var(--color-brand-500);
     color: var(--color-brand-300);
   }
 
@@ -255,6 +367,29 @@
     .faq-item[open]::details-content {
       block-size: auto;
     }
+  }
+
+  /* ---------- 代码块横向溢出渐隐提示 ---------- */
+  /* 已弃用：代码块改为自动换行 + 悬挂缩进，不再横向滚动。
+     保留规则以防未来有确实需要滚动的场景。 */
+  .code-scroll {
+    position: relative;
+  }
+
+  .code-scroll::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    right: 0;
+    width: 3rem;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, var(--color-ink-900) 85%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .code-scroll[data-overflowing='true']::after {
+    opacity: 1;
   }
 }
 

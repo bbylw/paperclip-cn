@@ -4,27 +4,16 @@ import { pillars } from '../data/pillars';
 import type { Pillar } from '../data/pillars';
 import Icon from './Icon.astro';
 
-const accents: Record<Pillar['accent'], { text: string; ring: string; icon: string }> = {
-  brand: {
-    text: 'text-brand-400',
-    ring: 'group-hover:border-brand-500/50',
-    icon: 'bg-brand-500/12 text-brand-300',
-  },
-  mint: {
-    text: 'text-mint-400',
-    ring: 'group-hover:border-mint-500/50',
-    icon: 'bg-mint-500/12 text-mint-300',
-  },
-  sky: {
-    text: 'text-sky-400',
-    ring: 'group-hover:border-sky-400/50',
-    icon: 'bg-sky-400/12 text-sky-400',
-  },
-  violet: {
-    text: 'text-violet-400',
-    ring: 'group-hover:border-violet-400/50',
-    icon: 'bg-violet-400/12 text-violet-400',
-  },
+/*
+ * 强调色只出现在图标底色与 hover 描边上，不再染正文。
+ * 之前四张卡的副标题分别是橙/蓝/紫/绿，与紧邻的 Features（全部橙色）
+ * 互相推翻规则，读者无法把同层级元素读成同一类信息。
+ */
+const accents: Record<Pillar['accent'], { chip: string; ring: string; glyph: string }> = {
+  brand: { chip: 'bg-brand-500/12 text-brand-300', ring: 'group-hover:border-brand-500/50', glyph: 'text-brand-400' },
+  mint: { chip: 'bg-mint-500/12 text-mint-300', ring: 'group-hover:border-mint-500/50', glyph: 'text-mint-400' },
+  sky: { chip: 'bg-sky-400/12 text-sky-400', ring: 'group-hover:border-sky-400/50', glyph: 'text-sky-400' },
+  violet: { chip: 'bg-violet-400/12 text-violet-400', ring: 'group-hover:border-violet-400/50', glyph: 'text-violet-400' },
 };
 
 const pillarIcons = ['ticket', 'org', 'book', 'terminal'] as const;
@@ -40,26 +29,26 @@ const pillarIcons = ['ticket', 'org', 'book', 'terminal'] as const;
     {
       pillars.map((pillar, i) => (
         <article
-          class:list={['card card-hover group p-6', accents[pillar.accent].ring]}
+          class:list={['card card-hover group flex flex-col p-6', accents[pillar.accent].ring]}
           data-reveal
           style={`--reveal-delay:${(i % 2) * 80}ms`}
         >
-          <div class="flex items-start justify-between gap-4">
+          <div class="flex items-center justify-between gap-4">
             <span
               class:list={[
                 'grid size-10 shrink-0 place-items-center rounded-xl',
-                accents[pillar.accent].icon,
+                accents[pillar.accent].chip,
               ]}
             >
               <Icon name={pillarIcons[i]} class="size-5" />
             </span>
-            <span class="chip shrink-0">面向{pillar.audience}</span>
+            <span class="chip shrink-0">{pillar.audience}</span>
           </div>
           <h3 class="mt-5 text-lg font-medium text-ink-100">{pillar.name}</h3>
-          <p class:list={['mt-1.5 text-sm', accents[pillar.accent].text]}>{pillar.tagline}</p>
-          <ul class="mt-4 space-y-2 border-t border-ink-800 pt-4">
+          <p class="mt-1.5 text-sm leading-relaxed text-ink-300">{pillar.tagline}</p>
+          <ul class="mt-5 space-y-2.5 border-t border-ink-800 pt-4">
             {pillar.covers.map((item) => (
-              <li class="flex items-start gap-2 text-sm text-ink-400">
+              <li class="flex items-start gap-2.5 text-sm leading-relaxed text-ink-400">
                 <span class="mt-2 size-1 shrink-0 rounded-full bg-ink-600" />
                 {item}
               </li>

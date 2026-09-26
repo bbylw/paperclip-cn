@@ -2,66 +2,82 @@
 import { roadmap, roadmapMeta } from '../data/roadmap';
 
 /**
- * 路线图看板 —— 构建时输出全部条目，筛选靠一小段原生 JS。
- * 不支持 JS 时全部条目仍然可见（只是无法筛选），属于可接受的降级。
+ * 路线图看板。
  *
- * 选中态完全由 CSS 依据 aria-pressed 决定，JS 只翻转这一个属性。
+ * 两处调整：
+ * 1. 默认视图只显示「进行中 + 规划中」。已上线 18 条对访客零信息价值，
+ *    却占 18 × 56px ≈ 1000px 高度。折叠成一行摘要。
+ * 2. 筛选行右侧补统计，填掉原本 1080px 的空白。
  */
 const filters = [
-  { value: 'all', label: '全部' },
+  { value: 'upcoming', label: '进行中与规划中' },
   { value: 'done', label: roadmapMeta.done.label },
-  { value: 'active', label: roadmapMeta.active.label },
-  { value: 'planned', label: roadmapMeta.planned.label },
+  { value: 'all', label: '全部' },
 ] as const;
 
-const counts: Record<(typeof filters)[number]['value'], number> = {
-  all: roadmap.length,
-  done: roadmap.filter((item) => item.status === 'done').length,
-  active: roadmap.filter((item) => item.status === 'active').length,
-  planned: roadmap.filter((item) => item.status === 'planned').length,
-};
+type Filter = (typeof filters)[number]['value'];
 
-const legend = (['done', 'active', 'planned'] as const).map((status) => ({
-  status,
-  ...roadmapMeta[status],
-}));
+const doneCount = roadmap.filter((item) => item.status === 'done').length;
+const upcomingCount = roadmap.length - doneCount;
+
+const counts: Record<Filter, number> = {
+  upcoming: upcomingCount,
+  done: doneCount,
+  all: roadmap.length,
+};
 ---
 
 <div data-roadmap>
-  <div class="flex flex-wrap items-center gap-2">
-    {
-      filters.map((option) => (
-        <button
-          type="button"
-          class="roadmap-filter"
-          data-filter={option.value}
-          aria-pressed={option.value === 'all' ? 'true' : 'false'}
-          aria-controls="roadmap-list"
-        >
-          {option.label}
-          <span class="roadmap-filter-count">{counts[option.value]}</span>
-        </button>
-      ))
-    }
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center gap-2">
+      {
+        filters.map((option) => {
+          const active = option.value === 'upcoming';
+          return (
+            <button
+              type="button"
+              class="roadmap-filter"
+              data-filter={option.value}
+              aria-pressed={active ? 'true' : 'false'}
+              aria-controls="roadmap-list"
+            >
+              {option.label}
+              <span class="roadmap-filter-count">{counts[option.value]}</span>
+            </button>
+          );
+        })
+      }
+    </div>
+    <p class="text-xs text-ink-400">
+      共 {roadmap.length} 项 · 详见
+      <a
+        href="https://github.com/paperclipai/paperclip/blob/master/ROADMAP.md"
+        target="_blank"
+        rel="noreferrer noopener"
+        class="link">仓库 ROADMAP.md</a
+      >
+    </p>
   </div>
 
-  <ul
-    id="roadmap-list"
-    class="mt-6 grid gap-px overflow-hidden rounded-2xl border border-ink-800 bg-ink-950 md:grid-cols-2"
-  >
+  {/*
+    列表宽度收到 max-w-3xl。原来 1216px 全宽时，短条目（如「CEO 聊天」）
+    与右端状态 chip 之间会空出 1000px，眼睛要横跨整行才能把两者连起来。
+  */}
+  <ul id="roadmap-list" class="mt-6 max-w-3xl border-t border-ink-800">
     {
       roadmap.map((item) => {
         const meta = roadmapMeta[item.status];
         return (
           <li
             data-status={item.status}
-            class="flex items-start gap-3 bg-ink-900 px-5 py-4 transition hover:bg-ink-850"
+            hidden={item.status === 'done'}
+            class="group flex items-center gap-4 border-b border-ink-800 py-3.5 transition-colors hover:bg-ink-900"
           >
-            <span class:list={['mt-2 size-2 shrink-0 rounded-full', meta.dot]} aria-hidden="true" />
-            <span class:list={['text-sm leading-relaxed', meta.text]}>{item.label}</span>
+            <span class:list={['size-2 shrink-0 rounded-full', meta.dot]} aria-hidden="true" />
+            <span class="min-w-0 flex-1 text-sm leading-relaxed text-ink-200">{item.label}</span>
             <span
               class:list={[
-                'ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11px] ring-1',
+                'shrink-0 rounded-full px-2 py-0.5 text-xs whitespace-nowrap ring-1',
                 meta.chip,
               ]}
             >
@@ -73,33 +89,36 @@ const legend = (['done', 'active', 'planned'] as const).map((status) => ({
     }
   </ul>
 
-  <ul class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-500">
-    {
-      legend.map((entry) => (
-        <li class="inline-flex items-center gap-2">
-          <span class:list={['size-2 shrink-0 rounded-full', entry.dot]} aria-hidden="true" />
-          {entry.label}
-          <span class="font-mono text-ink-600">{counts[entry.status]}</span>
-        </li>
-      ))
-    }
-  </ul>
+  <p
+    class="mt-4 text-xs text-ink-400"
+    data-roadmap-empty
+    hidden
+  >
+    没有符合该状态的条目。
+  </p>
 </div>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-roadmap]').forEach((root) => {
     const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-filter]'));
     const items = Array.from(root.querySelectorAll<HTMLElement>('[data-status]'));
+    const empty = root.querySelector<HTMLElement>('[data-roadmap-empty]');
 
     for (const button of buttons) {
       button.addEventListener('click', () => {
-        const filter = button.dataset.filter ?? 'all';
+        const filter = button.dataset.filter ?? 'upcoming';
         for (const other of buttons) {
           other.setAttribute('aria-pressed', String(other === button));
         }
+        let visible = 0;
         for (const item of items) {
-          item.hidden = filter !== 'all' && item.dataset.status !== filter;
+          const status = item.dataset.status;
+          const show =
+            filter === 'all' ? true : filter === 'done' ? status === 'done' : status !== 'done';
+          item.hidden = !show;
+          if (show) visible += 1;
         }
+        if (empty) empty.hidden = visible > 0;
       });
     }
   });

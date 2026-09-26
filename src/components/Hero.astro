@@ -1,107 +1,99 @@
 ---
 import { links } from '../data/site';
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 import ControlPlaneMock from './ControlPlaneMock.astro';
+import { thesis } from '../data/thesis';
 ---
 
-<section id="top" class="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
-  <div class="shell grid items-start gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+{/* Hero 只允许 4 个元素：状态条 / 主标题 / 一句副文 / 双 CTA。
+    原来这里塞了 9 个（引言、两段正文、加粗声明、三项元信息），
+    把首屏撑到 1001px 且主标题被挤成三行。 */}
+
+<section id="top" class="relative overflow-hidden pt-28 pb-14 sm:pt-36 sm:pb-20">
+  <div class="shell grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
     <div data-reveal>
       <p
-        class="inline-flex items-center gap-2 rounded-full border border-ink-700 bg-ink-900/70 px-3 py-1.5 text-xs text-ink-300"
+        class="inline-flex items-center gap-2 rounded-full border border-ink-700 bg-ink-900 px-3 py-1.5 text-xs text-ink-300"
       >
         <span class="relative flex size-2">
-          <span class="absolute inline-flex size-full rounded-full bg-mint-400 animate-pulse-ring"
-          ></span>
+          <span class="absolute inline-flex size-full animate-pulse-ring rounded-full bg-mint-400"></span>
           <span class="relative inline-flex size-2 rounded-full bg-mint-400"></span>
         </span>
         MIT 开源 · 自托管 · 无需账号
       </p>
 
       <h1
-        class="mt-6 text-4xl leading-[1.12] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+        class="mt-6 text-[2.1rem] leading-[1.15] font-semibold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem]"
       >
-        {/*
-          CJK 默认可在任意字符间断行，text-balance 会把「工作型 AI 智 / 能体的应用。」
-          拆成两行。只给「智能体」加 nowrap 把这个词锁住，断行位置交给浏览器。
-        */}
-        <span class="block text-ink-100">Paperclip 是用来管理</span>
-        <span class="block"
-          ><span class="text-gradient">工作型 <span class="whitespace-nowrap">AI 智能体</span></span
-          ><span class="text-ink-100">的应用。</span></span
-        >
+        <span class="block text-ink-100">用来管理</span>
+        <span class="block">
+          <span class="text-gradient">工作型 <span class="whitespace-nowrap">AI 智能体</span></span
+          ><span class="text-ink-100 whitespace-nowrap">的应用</span>
+        </span>
       </h1>
 
-      <p class="mt-6 text-lg text-ink-300">开源的 AI 智能体团队协作编排工具。</p>
-
-      <p
-        class="mt-5 max-w-xl border-l-2 border-brand-500/70 pl-4 text-base leading-relaxed text-ink-200 sm:text-lg"
-      >
-        如果说 OpenClaw 是一名「员工」，那么 Paperclip 就是这家<strong class="text-brand-300"
-          >公司</strong
-        >。
-      </p>
-
-      <p class="mt-6 max-w-xl text-sm leading-relaxed text-ink-400 sm:text-base">
-        Paperclip 是一个 Node.js 服务端加 React 界面，用来编排一支 AI 智能体团队去经营业务。自带你的智能体，分配目标，在一个仪表盘里跟踪工作进度与成本开销。
-      </p>
-      <p class="mt-3 max-w-xl text-sm leading-relaxed text-ink-400 sm:text-base">
-        它看起来像个任务管理器。内核却是：组织架构图、预算、治理、目标对齐，以及智能体之间的协调。
-      </p>
-      <p class="mt-4 text-sm font-medium text-ink-100 sm:text-base">
-        管理的是业务目标，而不是 pull request。
+      <p class="mt-6 max-w-lg text-lg leading-relaxed text-ink-300">
+        开源的 AI 智能体团队协作编排工具。管理的是业务目标，而不是 pull request。
       </p>
 
       <div class="mt-8 flex flex-wrap items-center gap-3">
-        <a
-          href="#quickstart"
-          class="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-medium text-ink-950 transition hover:bg-brand-400"
-        >
+        <a href="#quickstart" class="btn btn-primary">
           快速开始
           <Icon name="arrow" class="size-4" />
-        </a>
-        <a
-          href={links.github}
-          target="_blank"
-          rel="noreferrer noopener"
-          class="inline-flex items-center gap-2 rounded-xl border border-ink-700 px-5 py-3 text-sm text-ink-200 transition hover:border-ink-600 hover:bg-ink-850"
-        >
-          <Icon name="star" class="size-4" />
-          在 GitHub 上查看
         </a>
         <a
           href={links.docs}
           target="_blank"
           rel="noreferrer noopener"
-          class="inline-flex items-center gap-2 px-2 py-3 text-sm text-ink-300 transition hover:text-ink-100"
+          class="btn btn-ghost"
         >
-          <Icon name="book" class="size-4" />
-          文档
+          <Icon name="book" class="size-4 text-ink-400" />
+          阅读文档
         </a>
       </div>
-
-      <dl class="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-ink-800 pt-6">
-        <div>
-          <dt class="text-xs text-ink-500">部署形态</dt>
-          <dd class="mt-1 text-sm text-ink-200">单进程控制平面</dd>
-        </div>
-        <div>
-          <dt class="text-xs text-ink-500">运行时</dt>
-          <dd class="mt-1 text-sm text-ink-200">任意模型 · 任意智能体</dd>
-        </div>
-        <div>
-          <dt class="text-xs text-ink-500">协议</dt>
-          <dd class="mt-1 text-sm text-ink-200">MIT</dd>
-        </div>
-      </dl>
     </div>
 
     <div class="relative" data-reveal style="--reveal-delay:120ms">
       <div
-        class="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-500/12 via-transparent to-sky-400/10 blur-2xl"
+        class="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-500/10 via-transparent to-sky-400/8 blur-2xl"
       >
       </div>
       <ControlPlaneMock />
+    </div>
+  </div>
+</section>
+
+{/* 从 Hero 下沉的内容：定位引言 + 4 条支柱式要点。
+    这些是「解释」，不是「价值主张」，放在 Hero 之后读起来更顺。 */}
+
+<section class="border-t border-ink-800/70 py-14 sm:py-16">
+  <div class="shell">
+    <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+      <div data-reveal>
+        <Logo class="size-5" />
+        <p
+          class="mt-5 border-l-2 border-brand-500 pl-5 text-xl leading-relaxed font-medium text-balance text-ink-100"
+        >
+          如果说 OpenClaw 是一名「员工」，那么 Paperclip 就是这家<em class="not-italic text-brand-300"
+            >公司</em
+          >。
+        </p>
+        <p class="mt-4 max-w-md text-sm leading-relaxed text-ink-400">
+          它看起来像个任务管理器。内核却是组织架构图、预算、治理、目标对齐，以及智能体之间的协调。
+        </p>
+      </div>
+
+      <dl class="grid gap-x-8 gap-y-6 sm:grid-cols-2" data-reveal style="--reveal-delay:80ms">
+        {
+          thesis.map((item) => (
+            <div class="border-t border-ink-800 pt-4">
+              <dt class="text-xs tracking-wide text-ink-400">{item.label}</dt>
+              <dd class="mt-1.5 text-sm leading-relaxed text-ink-200">{item.detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
     </div>
   </div>
 </section>

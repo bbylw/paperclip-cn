@@ -1,26 +1,14 @@
 ---
 import Section from './Section.astro';
-import { links } from '../data/site';
 import RoadmapBoard from './RoadmapBoard.astro';
 ---
 
 <Section
   id="roadmap"
-  eyebrow="ROADMAP"
   title="路线图"
-  lead="这是精简版路线图预览，完整版本见仓库中的 ROADMAP.md。"
+  lead="这是精简版预览。已上线的 18 项折叠收起，需要时点「已上线」展开。"
 >
   <div data-reveal>
     <RoadmapBoard />
   </div>
-
-  <p class="mt-6 text-sm text-ink-500">
-    <a
-      href={links.roadmap}
-      target="_blank"
-      rel="noreferrer noopener"
-      class="inline-block py-1 text-ink-300 underline decoration-ink-600 underline-offset-4 transition hover:text-brand-300"
-      >完整路线图 →</a
-    >
-  </p>
 </Section>
