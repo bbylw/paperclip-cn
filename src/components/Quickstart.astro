@@ -1,0 +1,81 @@
+---
+import Section from './Section.astro';
+import { quickstartSnippets, requirements } from '../data/quickstart';
+import { npmRegistryTip } from '../data/telemetry';
+import { links } from '../data/site';
+import CodeBlock from './islands/CodeBlock';
+import Icon from './Icon.astro';
+---
+
+<Section
+  id="quickstart"
+  eyebrow="QUICKSTART"
+  title="快速开始"
+  lead="开源。自托管。无需 Paperclip 账号。"
+>
+  <div class="grid gap-4 lg:grid-cols-2">
+    {
+      quickstartSnippets.map((snippet, i) => (
+        <div class="min-w-0" data-reveal style={`--reveal-delay:${(i % 2) * 70}ms`}>
+          <CodeBlock client:visible code={snippet.code} title={snippet.title} note={snippet.note} />
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="mt-8 grid gap-4 lg:grid-cols-[1.2fr_1fr]">
+    <div class="card p-6" data-reveal>
+      <div class="flex items-center gap-2.5">
+        <span class="grid size-8 place-items-center rounded-lg bg-ink-850 text-ink-300 ring-1 ring-ink-700">
+          <Icon name="terminal" class="size-4" />
+        </span>
+        <h3 class="text-base font-medium text-ink-100">环境要求</h3>
+      </div>
+      <dl class="mt-5 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2">
+        {
+          requirements.map((req) => (
+            <div class="flex items-baseline justify-between gap-4 bg-ink-900 px-4 py-3">
+              <dt class="text-sm text-ink-500">{req.label}</dt>
+              <dd class="font-mono text-xs text-ink-200">{req.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="mt-4 text-xs leading-relaxed text-ink-500">
+        手动运行后 API 服务监听 <code class="font-mono text-ink-300">http://localhost:3100</code>，内置的
+        PostgreSQL 数据库会自动创建，无需任何配置。
+      </p>
+    </div>
+
+    <aside class="card p-6" data-reveal style="--reveal-delay:80ms">
+      <div class="flex items-center gap-2.5">
+        <span class="grid size-8 place-items-center rounded-lg bg-brand-500/12 text-brand-300 ring-1 ring-brand-500/30">
+          <Icon name="shield" class="size-4" />
+        </span>
+        <h3 class="text-base font-medium text-ink-100">排障：私有 npm 源</h3>
+      </div>
+      <p class="mt-4 text-sm leading-relaxed text-ink-400">
+        <span class="text-ink-200">{npmRegistryTip.problem}</span>
+        {npmRegistryTip.cause}
+      </p>
+      <div class="mt-4 space-y-2 font-mono text-[13px]">
+        <p class="rounded-lg bg-ink-950/70 px-3 py-2 text-ink-400">
+          <span class="text-ink-600"># 诊断</span>
+          <br />
+          <span class="text-ink-100">{npmRegistryTip.diagnose}</span>
+        </p>
+        <p class="rounded-lg bg-ink-950/70 px-3 py-2 text-mint-300">{npmRegistryTip.fix}</p>
+      </div>
+      <p class="mt-4 text-xs text-ink-500">
+        关于锁定版本、canary 与 git-ref 安装、更新、回滚、服务管理与卸载，详见
+        <a
+          href={links.installing}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="text-ink-300 underline decoration-ink-600 underline-offset-4 transition hover:text-brand-300"
+          >INSTALLING.md</a
+        >。
+      </p>
+    </aside>
+  </div>
+</Section>

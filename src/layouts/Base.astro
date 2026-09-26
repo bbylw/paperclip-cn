@@ -1,0 +1,98 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+
+import { site } from '../data/site';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.title, description = site.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
+---
+
+<!doctype html>
+<html lang="zh-CN" class="scheme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#08080c" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="author" content="Paperclip Labs, Inc" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Paperclip" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(site.ogImage, site.url).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="628" />
+    <meta property="og:image:alt" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(site.ogImage, site.url).href} />
+    <meta name="twitter:image:alt" content={title} />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body class="min-h-screen antialiased">
+    <a
+      href="#main"
+      class="sr-only rounded-lg bg-brand-500 px-4 py-2 text-sm text-ink-950 focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60]"
+    >
+      跳到主要内容
+    </a>
+
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div class="grid-bg absolute inset-0 opacity-70"></div>
+      <div
+        class="absolute -top-40 left-1/2 h-80 w-[52rem] -translate-x-1/2 rounded-full bg-brand-500/10 blur-3xl"
+      >
+      </div>
+    </div>
+
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+
+    <script>
+      // 滚动进场动画
+      const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-in');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.08 },
+        );
+        targets.forEach((el) => observer.observe(el));
+      } else {
+        targets.forEach((el) => el.classList.add('is-in'));
+      }
+    </script>
+  </body>
+</html>

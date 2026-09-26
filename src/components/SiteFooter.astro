@@ -1,0 +1,101 @@
+---
+import { links, navItems, site } from '../data/site';
+
+const community = [
+  { label: 'Discord', href: links.discord, hint: '加入社区' },
+  { label: 'Twitter / X', href: links.twitter, hint: '关注更新与公告' },
+  { label: 'GitHub Issues', href: links.issues, hint: '缺陷与功能请求' },
+  { label: 'GitHub Discussions', href: links.discussions, hint: '想法与 RFC' },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-ink-800 bg-ink-900/40">
+  <div class="shell py-16">
+    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr]">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="grid size-8 place-items-center rounded-lg bg-ink-850 ring-1 ring-ink-700">
+            <svg viewBox="0 0 32 32" class="size-5" fill="none" aria-hidden="true">
+              <path
+                d="M13.2 11.2h5.4a3.6 3.6 0 0 1 0 7.2h-4.2a1.8 1.8 0 0 0 0 3.6h5.4"
+                stroke="var(--color-brand-500)"
+                stroke-width="2.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <path
+                d="M13.2 11.2v14.4"
+                stroke="var(--color-brand-300)"
+                stroke-width="2.4"
+                stroke-linecap="round"></path>
+            </svg>
+          </span>
+          <span class="text-base font-semibold text-ink-100">{site.name}</span>
+        </div>
+        <p class="mt-4 max-w-sm text-sm leading-relaxed text-ink-400">
+          开源的 AI 智能体团队协作编排工具。管理的是业务目标，而不是 pull request。
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <span class="chip">MIT License</span>
+          <span class="chip">自托管优先</span>
+          <span class="chip">一次部署，多家公司</span>
+        </div>
+      </div>
+
+      <nav aria-label="页脚导航">
+        <h2 class="text-sm font-medium text-ink-200">页面导航</h2>
+        <ul class="mt-4 space-y-3 text-sm text-ink-400">
+          {
+            navItems.map((item) => (
+              <li>
+                <a href={item.href} class="transition hover:text-brand-300">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="社区链接">
+        <h2 class="text-sm font-medium text-ink-200">社区</h2>
+        <ul class="mt-4 space-y-3 text-sm text-ink-400">
+          {
+            community.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  class="group flex items-baseline gap-2 transition hover:text-brand-300"
+                >
+                  {item.label}
+                  <span class="text-xs text-ink-600 transition group-hover:text-ink-500">
+                    {item.hint}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+
+    <div
+      class="mt-14 flex flex-col gap-4 border-t border-ink-800 pt-8 text-sm text-ink-500 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>
+        MIT © {year}
+        <a
+          href={links.website}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="text-ink-300 transition hover:text-brand-300">Paperclip Labs, Inc</a>
+      </p>
+      <p class="text-ink-600">
+        为想把事做成、而不是想盯着智能体的人而打造。
+      </p>
+    </div>
+  </div>
+</footer>

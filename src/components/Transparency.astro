@@ -1,0 +1,82 @@
+---
+import Section from './Section.astro';
+import { telemetryOptOut } from '../data/telemetry';
+import { links } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<Section
+  id="transparency"
+  eyebrow="OBSERVABILITY & TELEMETRY"
+  title="可观测性与遥测"
+  lead="默认不做手脚：追踪能力按需开启，遥测可用任何一种方式一键关闭。"
+>
+  <div class="grid gap-4 lg:grid-cols-2">
+    <article class="card p-6" data-reveal>
+      <div class="flex items-center gap-2.5">
+        <span class="grid size-8 place-items-center rounded-lg bg-sky-400/12 text-sky-400 ring-1 ring-sky-400/30">
+          <Icon name="bolt" class="size-4" />
+        </span>
+        <h3 class="text-base font-medium text-ink-100">可观测性（可选）</h3>
+      </div>
+      <p class="mt-4 text-sm leading-relaxed text-ink-400">
+        Paperclip 内置可选的 OpenTelemetry 服务端自动埋点（仅追踪）。当设置了
+        <code class="font-mono text-[13px] text-ink-200">OTEL_EXPORTER_OTLP_ENDPOINT</code>
+        时启用，并通过标准的
+        <code class="font-mono text-[13px] text-ink-200">OTEL_EXPORTER_OTLP_PROTOCOL</code>
+        支持 grpc、http/protobuf 与 http/json。SDK、自动埋点与导出器包都是 optional peer dependencies——只有需要追踪时才安装。
+      </p>
+      <p class="mt-3 text-sm leading-relaxed text-ink-400">
+        Sentry 错误监控同样可选，覆盖服务端与浏览器：设置
+        <code class="font-mono text-[13px] text-ink-200">SENTRY_DSN_FRONTEND</code> 与
+        <code class="font-mono text-[13px] text-ink-200">SENTRY_DSN_BACKEND</code> 即可启用。
+      </p>
+      <a
+        href={links.observability}
+        target="_blank"
+        rel="noreferrer noopener"
+        class="mt-4 inline-block text-xs text-ink-300 underline decoration-ink-600 underline-offset-4 transition hover:text-brand-300"
+        >安装命令与环境变量参考 →</a
+      >
+    </article>
+
+    <article class="card p-6" data-reveal style="--reveal-delay:80ms">
+      <div class="flex items-center gap-2.5">
+        <span class="grid size-8 place-items-center rounded-lg bg-mint-500/12 text-mint-300 ring-1 ring-mint-500/30">
+          <Icon name="shield" class="size-4" />
+        </span>
+        <h3 class="text-base font-medium text-ink-100">遥测：默认开启，可随时关闭</h3>
+      </div>
+      <p class="mt-4 text-sm leading-relaxed text-ink-400">
+        Paperclip 收集匿名的使用遥测数据。绝不收集个人信息、事项内容、提示词、文件路径或密钥；私有仓库的引用在发送前会用每个安装实例独立的盐值做哈希。
+      </p>
+      <dl class="mt-4 grid gap-px overflow-hidden rounded-xl border border-ink-800 bg-ink-800 sm:grid-cols-2">
+        {
+          telemetryOptOut.map((row) => (
+            <div class="bg-ink-950/60 px-4 py-3">
+              <dt class="text-xs text-ink-500">{row.method}</dt>
+              <dd class="mt-1 font-mono text-xs leading-relaxed text-ink-200">{row.how}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="mt-4 text-xs leading-relaxed text-ink-500">
+        改动已 emitting 的遥测事件的贡献者，请遵循
+        <a
+          href={links.telemetryContract}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="text-ink-300 underline decoration-ink-600 underline-offset-4 transition hover:text-brand-300"
+          >遥测数据契约</a
+        >；拟议的第一方事件请遵循
+        <a
+          href={links.telemetryWorkflow}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="text-ink-300 underline decoration-ink-600 underline-offset-4 transition hover:text-brand-300"
+          >遥测工作流</a
+        >。
+      </p>
+    </article>
+  </div>
+</Section>

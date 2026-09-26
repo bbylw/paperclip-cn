@@ -1,0 +1,87 @@
+---
+/** 首屏右侧：控制平面仪表盘示意（静态模拟数据） */
+const agents = [
+  {
+    role: 'CEO 智能体',
+    task: '目标：做到 $1M MRR',
+    dot: 'bg-mint-400',
+    tag: '在线',
+  },
+  {
+    role: 'CTO 智能体',
+    task: '拆解季度技术路线图',
+    dot: 'bg-brand-400',
+    tag: '执行中',
+  },
+  { role: '工程智能体 ×3', task: '功能实现与验收', dot: 'bg-sky-400', tag: '排队' },
+  { role: '市场智能体', task: '增长实验与内容排程', dot: 'bg-ink-500', tag: '休眠' },
+] as const;
+---
+
+<div class="card overflow-hidden">
+  <div class="flex items-center justify-between border-b border-ink-800 px-5 py-4">
+    <div class="flex items-center gap-2">
+      <span class="size-2.5 rounded-full bg-ink-600"></span>
+      <span class="size-2.5 rounded-full bg-ink-600"></span>
+      <span class="size-2.5 rounded-full bg-ink-600"></span>
+      <span class="ml-2 font-mono text-xs text-ink-400">控制平面 · localhost:3100</span>
+    </div>
+    <span class="chip font-mono">online</span>
+  </div>
+
+  <div class="space-y-1.5 p-5">
+    <div class="flex items-center gap-3 rounded-lg px-2 py-2">
+      <span class="grid size-8 shrink-0 place-items-center rounded-full bg-ink-800 text-xs text-ink-300"
+        >人</span
+      >
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-sm text-ink-200">你 · 董事会</p>
+        <p class="text-xs text-ink-500">审批 / 预算 / 治理</p>
+      </div>
+      <span class="text-xs text-mint-400">在线</span>
+    </div>
+
+    {
+      agents.map((agent) => (
+        <div class="flex items-center gap-3 rounded-lg bg-ink-850/60 px-2 py-2 ring-1 ring-ink-800">
+          <span class="grid size-8 shrink-0 place-items-center rounded-full bg-ink-800 font-mono text-[10px] text-ink-400">
+            AI
+          </span>
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm text-ink-200">{agent.role}</p>
+            <p class="truncate text-xs text-ink-500">{agent.task}</p>
+          </div>
+          <div class="flex shrink-0 items-center gap-2">
+            <span class="relative flex size-2">
+              <span
+                class:list={[
+                  'absolute inline-flex size-full rounded-full animate-pulse-ring',
+                  agent.dot,
+                ]}
+              />
+              <span class:list={['relative inline-flex size-2 rounded-full', agent.dot]} />
+            </span>
+            <span class="text-xs text-ink-400">{agent.tag}</span>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="space-y-4 border-t border-ink-800 p-5">
+    <div>
+      <div class="flex items-baseline justify-between text-xs text-ink-400">
+        <span>本月 token 预算 · CTO 智能体</span>
+        <span class="font-mono text-ink-200">62%</span>
+      </div>
+      <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-ink-800">
+        <div class="h-full w-[62%] rounded-full bg-gradient-to-r from-brand-600 to-brand-400"></div>
+      </div>
+      <p class="mt-2 text-[11px] text-ink-500">触顶即自动节流并暂停排队中的工作</p>
+    </div>
+    <div class="flex items-center justify-between font-mono text-[11px] text-ink-500">
+      <span>下一心跳 14:32</span>
+      <span>2 个事项已原子签出</span>
+    </div>
+  </div>
+</div>

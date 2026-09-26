@@ -1,0 +1,42 @@
+---
+import { agentRuntimes } from '../data/steps';
+---
+
+<section id="agents" class="relative border-y border-ink-800/80 bg-ink-900/30 py-10">
+  <div class="shell">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
+      <div class="shrink-0 lg:w-44">
+        <p class="text-xs tracking-[0.25em] text-ink-500 uppercase">可接入的智能体</p>
+      </div>
+
+      <ul class="grid grid-cols-3 gap-3 sm:grid-cols-6 lg:flex lg:flex-1 lg:items-center">
+        {
+          agentRuntimes.map((agent) => (
+            <li class="lg:flex-1">
+              <a
+                href={agent.href}
+                class="group flex flex-col items-center gap-2 rounded-xl border border-ink-800 bg-ink-900/60 px-3 py-4 transition hover:border-ink-600 hover:bg-ink-850"
+              >
+                <img
+                  src={agent.logo}
+                  alt={agent.name}
+                  width="32"
+                  height="32"
+                  loading="lazy"
+                  class="size-8 transition group-hover:scale-110"
+                />
+                <span class="text-[11px] text-ink-400 transition group-hover:text-ink-200">
+                  {agent.name}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="text-sm text-ink-400 lg:w-64">
+        <em>只要它能接收心跳信号，就算被录用。</em>
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,30 @@
+---
+import Section from './Section.astro';
+import { features } from '../data/pillars';
+import Icon from './Icon.astro';
+---
+
+<Section
+  id="features"
+  eyebrow="FEATURES"
+  title="功能特性"
+  lead="自带你的智能体、目标对齐、心跳机制、成本管控、多组织隔离、工单系统、治理、组织架构图与移动端。"
+>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      features.map((feature, i) => (
+        <article
+          class="card card-hover group flex flex-col p-6"
+          data-reveal
+          style={`--reveal-delay:${(i % 3) * 80}ms`}
+        >
+          <span class="grid size-10 place-items-center rounded-xl bg-ink-850 text-brand-300 ring-1 ring-ink-700 transition group-hover:ring-brand-500/50">
+            <Icon name={feature.icon} class="size-5" />
+          </span>
+          <h3 class="mt-5 text-base font-medium text-ink-100">{feature.title}</h3>
+          <p class="mt-2.5 text-sm leading-relaxed text-ink-400">{feature.detail}</p>
+        </article>
+      ))
+    }
+  </div>
+</Section>

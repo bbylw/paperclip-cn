@@ -1,0 +1,41 @@
+---
+import { serverModules, clientRuntimes } from '../data/architecture';
+import Icon from './Icon.astro';
+---
+
+<div class="card overflow-hidden p-0" data-reveal>
+  <div class="flex items-center justify-between border-b border-ink-800 px-5 py-3.5">
+    <span class="font-mono text-xs tracking-[0.2em] text-ink-400 uppercase">Paperclip Server</span>
+    <span class="chip font-mono">12 subsystems</span>
+  </div>
+
+  <div class="grid gap-px bg-ink-800 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      serverModules.map((mod) => (
+        <div class="bg-ink-900 px-4 py-3.5 transition hover:bg-ink-850">
+          <p class="text-sm text-ink-200">{mod.en}</p>
+          <p class="mt-0.5 text-xs text-ink-500">{mod.zh}</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="border-t border-ink-800 p-5">
+    <div class="flex justify-center py-1 text-ink-600" aria-hidden="true">
+      <Icon name="arrow" class="size-4 rotate-90" />
+    </div>
+    <div class="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        clientRuntimes.map((runtime) => (
+          <div class="rounded-xl border border-ink-800 bg-ink-850/60 px-4 py-3 text-center">
+            <p class="text-sm text-ink-200">{runtime.en}</p>
+            <p class="mt-0.5 text-xs text-ink-500">{runtime.zh}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="mt-4 text-center font-mono text-[11px] text-ink-600">
+      ▲ 心跳唤醒 · 任务派发 · 成本事件 · 审计轨迹
+    </p>
+  </div>
+</div>
