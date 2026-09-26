@@ -1,3 +1,5 @@
+import { links } from './site';
+
 export interface Snippet {
   id: string;
   title: string;
@@ -75,4 +77,20 @@ export const requirements = [
   { label: '包管理器', value: 'pnpm 9.15+' },
   { label: '数据库', value: '内置 PostgreSQL（自动创建）' },
   { label: '开发端口', value: 'API :3100 · 移动端 UI :3101' },
+] as const;
+
+/** 排障：私有 npm 源导致 npx 解析到内网 registry 而报 E404 */
+export const npmRegistryTip = {
+  problem: '因为 paperclipai（或类似包）报 E404 而失败。',
+  cause:
+    '你通过全局 ~/.npmrc 使用了私有 npm 源（例如 GitHub Packages），npx 可能会把包解析到该私有源。',
+  diagnose: 'npm config get registry',
+  fix: 'npx --registry https://registry.npmjs.org paperclipai onboard --yes',
+} as const;
+
+/** 上游开发文档（站内补充入口） */
+export const devResources = [
+  { label: 'INSTALLING.md', hint: '锁定版本、canary、更新与回滚', href: links.installing },
+  { label: 'DEVELOPING.md', hint: '完整开发指南', href: links.developing },
+  { label: 'CLI.md', hint: 'CLI 参考与隔离测试实例', href: links.cli },
 ] as const;

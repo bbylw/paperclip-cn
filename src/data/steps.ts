@@ -23,20 +23,19 @@ export const steps = [
   },
 ] as const satisfies readonly Step[];
 
-/** 可接入的智能体运行时 */
+/** 可接入的智能体运行时（展示用，非链接目标） */
 export interface AgentRuntime {
   name: string;
   logo: string;
-  href: string;
 }
 
 export const agentRuntimes = [
-  { name: 'OpenClaw', logo: '/images/logos/openclaw.svg', href: '#quickstart' },
-  { name: 'Claude Code', logo: '/images/logos/claude.svg', href: '#architecture' },
-  { name: 'Codex', logo: '/images/logos/codex.svg', href: '#architecture' },
-  { name: 'Cursor', logo: '/images/logos/cursor.svg', href: '#architecture' },
-  { name: 'Bash', logo: '/images/logos/bash.svg', href: '#architecture' },
-  { name: 'HTTP', logo: '/images/logos/http.svg', href: '#architecture' },
+  { name: 'OpenClaw', logo: '/images/logos/openclaw.svg' },
+  { name: 'Claude Code', logo: '/images/logos/claude.svg' },
+  { name: 'Codex', logo: '/images/logos/codex.svg' },
+  { name: 'Cursor', logo: '/images/logos/cursor.svg' },
+  { name: 'Bash', logo: '/images/logos/bash.svg' },
+  { name: 'HTTP', logo: '/images/logos/http.svg' },
 ] as const satisfies readonly AgentRuntime[];
 
 /** 「适合你」的判断清单（markdown ** 强调） */

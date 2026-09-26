@@ -3,17 +3,34 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 
-import { site } from '../data/site';
+import { site, upstream } from '../data/site';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title?: string;
   description?: string;
+  /** 是否输出 noindex（404 等页面用） */
+  noindex?: boolean;
 }
 
-const { title = site.title, description = site.description } = Astro.props;
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
+const { title = site.title, description = site.description, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/+$/, '') || '/', site.url).href;
+const ogImage = new URL(site.ogImage, site.url).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: 'Paperclip',
+  alternateName: 'Paperclip 中文社区文档站',
+  description: site.description,
+  url: site.url,
+  codeRepository: upstream.repo,
+  license: 'https://opensource.org/licenses/MIT',
+  author: { '@type': 'Organization', name: upstream.name, url: upstream.website },
+  inLanguage: 'zh-CN',
+  keywords: ['AI 智能体', '智能体编排', '多智能体协作', '组织架构图', '预算管控', '治理'],
+};
 ---
 
 <!doctype html>
@@ -22,30 +39,33 @@ const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#08080c" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="author" content="Paperclip Labs, Inc" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="author" content="Paperclip 中文社区翻译站（非官方）" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Paperclip" />
+    <meta property="og:site_name" content="Paperclip 中文社区翻译站" />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(site.ogImage, site.url).href} />
+    <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="628" />
     <meta property="og:image:alt" content={title} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(site.ogImage, site.url).href} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={title} />
 
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <script is:inline>
       document.documentElement.classList.add('js');
@@ -74,24 +94,37 @@ const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url
     <SiteFooter />
 
     <script>
-      // 滚动进场动画
-      const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      // 滚动进场动画。
+      // 用 rAF 节流的位置扫描，而不是 IntersectionObserver：
+      // 快速滚动或锚点跳转时，IO 可能整个跳过某个元素（两帧之间从视口下方越到上方），
+      // 那样它会永远停在 opacity: 0 —— 内容就这样消失了。
+      const pending = new Set<HTMLElement>(
+        Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]')),
+      );
 
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-in');
-                observer.unobserve(entry.target);
-              }
-            }
-          },
-          { rootMargin: '0px 0px -10% 0px', threshold: 0.08 },
-        );
-        targets.forEach((el) => observer.observe(el));
-      } else {
-        targets.forEach((el) => el.classList.add('is-in'));
+      const reveal = () => {
+        if (pending.size === 0) return;
+        const limit = window.innerHeight * 0.92;
+        for (const el of pending) {
+          if (el.getBoundingClientRect().top < limit) {
+            el.classList.add('is-in');
+            pending.delete(el);
+          }
+        }
+      };
+
+      if (pending.size > 0) {
+        let frame = 0;
+        const schedule = () => {
+          if (frame) return;
+          frame = requestAnimationFrame(() => {
+            frame = 0;
+            reveal();
+          });
+        };
+        reveal();
+        window.addEventListener('scroll', schedule, { passive: true });
+        window.addEventListener('resize', schedule, { passive: true });
       }
     </script>
   </body>

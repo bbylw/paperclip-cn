@@ -1,0 +1,123 @@
+---
+import { normalizeNewlines, tokenize, type TokenKind } from '../lib/highlight';
+
+interface Props {
+  code: string;
+  title: string;
+  note?: string;
+}
+
+const { code: rawCode, title, note } = Astro.props;
+
+/**
+ * 归一化换行：数据文件是 CRLF，模板字符串里的换行会带 \r。
+ * 不处理的话，页面上会出现断行、复制出来的命令也无法直接粘贴执行。
+ */
+const code = normalizeNewlines(rawCode);
+
+const kindClass: Record<TokenKind, string> = {
+  plain: '',
+  comment: 'text-ink-600 italic',
+  string: 'text-mint-300',
+  flag: 'text-brand-300',
+  command: 'font-medium text-ink-100',
+  env: 'text-ink-100',
+};
+
+const lines = tokenize(code);
+---
+
+<div class="card group overflow-hidden">
+  <div class="flex items-center justify-between gap-4 border-b border-ink-800 px-4 py-3">
+    <span class="font-mono text-xs text-ink-300">{title}</span>
+    <button
+      type="button"
+      data-copy={code}
+      class="inline-flex min-h-8 items-center gap-1.5 rounded-md border border-ink-700 px-2.5 py-1.5 text-xs text-ink-300 transition hover:border-ink-600 hover:bg-ink-850 hover:text-ink-100"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        class="size-3.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+        <path d="M5.5 15H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v.5"></path>
+      </svg>
+      <span data-copy-label>复制</span>
+    </button>
+    <span role="status" class="sr-only" data-copy-status></span>
+  </div>
+
+  <pre class="overflow-x-auto px-4 py-4 text-[13px] leading-6"><code class="font-mono text-ink-300">{
+    lines.map((tokens) => (
+      // 子节点必须与标签同行，否则 Astro 会把缩进当成文本节点输出
+      <span class="block">{tokens.length === 0 ? '\u00A0' : tokens.map((token) => <span class={kindClass[token.kind]}>{token.text}</span>)}</span>
+    ))
+  }</code></pre>
+
+  {
+    note && (
+      <p class="border-t border-ink-800 px-4 py-3 text-xs leading-relaxed text-ink-500">
+        {note}
+      </p>
+    )
+  }
+</div>
+
+<script>
+  type CopyButton = HTMLButtonElement & { dataset: DOMStringMap & { copy?: string } };
+
+  const LABEL = '复制';
+  const LABEL_COPIED = '已复制';
+
+  async function writeClipboard(text: string): Promise<boolean> {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // 非安全上下文或浏览器不支持 Clipboard API 时的回退
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+      document.body.appendChild(area);
+      area.select();
+      let ok = false;
+      try {
+        ok = (document as unknown as { execCommand?: (id: string) => boolean }).execCommand?.(
+          'copy',
+        ) === true;
+      } catch {
+        ok = false;
+      }
+      area.remove();
+      return ok;
+    }
+  }
+
+  function markCopied(button: CopyButton, ok: boolean) {
+    const label = button.querySelector<HTMLElement>('[data-copy-label]');
+    const status = button.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    if (label) label.textContent = ok ? LABEL_COPIED : '复制失败';
+    if (status) status.textContent = ok ? '已复制到剪贴板' : '复制失败，请手动选择代码';
+
+    const timerKey = '__copyTimer';
+    window.clearTimeout((button as unknown as Record<string, number>)[timerKey]);
+    (button as unknown as Record<string, number>)[timerKey] = window.setTimeout(() => {
+      if (label) label.textContent = LABEL;
+    }, 1800);
+  }
+
+  // 事件委托：6 个代码块只注册一个监听器
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement | null;
+    const button = target?.closest<CopyButton>('[data-copy]');
+    if (!button) return;
+    void writeClipboard(button.dataset.copy ?? '').then((ok) => markCopied(button, ok));
+  });
+</script>

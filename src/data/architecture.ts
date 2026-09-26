@@ -19,13 +19,18 @@ export const serverModules = [
   { en: 'Company Portability', zh: '公司可移植性' },
 ] as const satisfies readonly ServerModule[];
 
-/** 架构图下方的智能体接入方式 */
+/** 架构图下方的智能体接入方式（客户端运行时） */
+export interface ClientRuntime {
+  en: string;
+  zh: string;
+}
+
 export const clientRuntimes = [
   { en: 'Claude Code', zh: '编码智能体' },
   { en: 'Codex', zh: '编码智能体' },
   { en: 'CLI agents', zh: '命令行智能体' },
   { en: 'HTTP / web bots', zh: 'HTTP / Webhook 机器人' },
-] as const satisfies readonly ServerModule[];
+] as const satisfies readonly ClientRuntime[];
 
 /** 各子系统说明 */
 export const subsystems = [

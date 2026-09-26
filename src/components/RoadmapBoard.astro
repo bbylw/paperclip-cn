@@ -1,0 +1,106 @@
+---
+import { roadmap, roadmapMeta } from '../data/roadmap';
+
+/**
+ * 路线图看板 —— 构建时输出全部条目，筛选靠一小段原生 JS。
+ * 不支持 JS 时全部条目仍然可见（只是无法筛选），属于可接受的降级。
+ *
+ * 选中态完全由 CSS 依据 aria-pressed 决定，JS 只翻转这一个属性。
+ */
+const filters = [
+  { value: 'all', label: '全部' },
+  { value: 'done', label: roadmapMeta.done.label },
+  { value: 'active', label: roadmapMeta.active.label },
+  { value: 'planned', label: roadmapMeta.planned.label },
+] as const;
+
+const counts: Record<(typeof filters)[number]['value'], number> = {
+  all: roadmap.length,
+  done: roadmap.filter((item) => item.status === 'done').length,
+  active: roadmap.filter((item) => item.status === 'active').length,
+  planned: roadmap.filter((item) => item.status === 'planned').length,
+};
+
+const legend = (['done', 'active', 'planned'] as const).map((status) => ({
+  status,
+  ...roadmapMeta[status],
+}));
+---
+
+<div data-roadmap>
+  <div class="flex flex-wrap items-center gap-2">
+    {
+      filters.map((option) => (
+        <button
+          type="button"
+          class="roadmap-filter"
+          data-filter={option.value}
+          aria-pressed={option.value === 'all' ? 'true' : 'false'}
+          aria-controls="roadmap-list"
+        >
+          {option.label}
+          <span class="roadmap-filter-count">{counts[option.value]}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <ul
+    id="roadmap-list"
+    class="mt-6 grid gap-px overflow-hidden rounded-2xl border border-ink-800 bg-ink-950 md:grid-cols-2"
+  >
+    {
+      roadmap.map((item) => {
+        const meta = roadmapMeta[item.status];
+        return (
+          <li
+            data-status={item.status}
+            class="flex items-start gap-3 bg-ink-900 px-5 py-4 transition hover:bg-ink-850"
+          >
+            <span class:list={['mt-2 size-2 shrink-0 rounded-full', meta.dot]} aria-hidden="true" />
+            <span class:list={['text-sm leading-relaxed', meta.text]}>{item.label}</span>
+            <span
+              class:list={[
+                'ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11px] ring-1',
+                meta.chip,
+              ]}
+            >
+              {meta.label}
+            </span>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  <ul class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-500">
+    {
+      legend.map((entry) => (
+        <li class="inline-flex items-center gap-2">
+          <span class:list={['size-2 shrink-0 rounded-full', entry.dot]} aria-hidden="true" />
+          {entry.label}
+          <span class="font-mono text-ink-600">{counts[entry.status]}</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-roadmap]').forEach((root) => {
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-status]'));
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter ?? 'all';
+        for (const other of buttons) {
+          other.setAttribute('aria-pressed', String(other === button));
+        }
+        for (const item of items) {
+          item.hidden = filter !== 'all' && item.dataset.status !== filter;
+        }
+      });
+    }
+  });
+</script>

@@ -1,6 +1,7 @@
 ---
 import { links, navItems } from '../data/site';
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 ---
 
 <header
@@ -8,26 +9,14 @@ import Icon from './Icon.astro';
   class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300"
 >
   <div class="shell flex h-16 items-center justify-between gap-6">
-    <a href="#top" class="group flex items-center gap-2.5" aria-label="Paperclip 首页">
+    <a href="#top" class="group flex items-center gap-2.5" aria-label="Paperclip 中文社区翻译站 · 首页">
       <span
         class="grid size-8 place-items-center rounded-lg bg-ink-850 ring-1 ring-ink-700 transition group-hover:ring-brand-500/60"
       >
-        <svg viewBox="0 0 32 32" class="size-5" fill="none" aria-hidden="true">
-          <path
-            d="M13.2 11.2h5.4a3.6 3.6 0 0 1 0 7.2h-4.2a1.8 1.8 0 0 0 0 3.6h5.4"
-            stroke="var(--color-brand-500)"
-            stroke-width="2.4"
-            stroke-linecap="round"
-            stroke-linejoin="round"></path>
-          <path
-            d="M13.2 11.2v14.4"
-            stroke="var(--color-brand-300)"
-            stroke-width="2.4"
-            stroke-linecap="round"></path>
-        </svg>
+        <Logo class="size-5" />
       </span>
       <span class="text-[15px] font-semibold tracking-tight text-ink-100">Paperclip</span>
-      <span class="chip hidden sm:inline-flex">中文官网</span>
+      <span class="chip hidden sm:inline-flex">非官方社区翻译</span>
     </a>
 
     <nav class="hidden items-center gap-1 md:flex" aria-label="主导航">
@@ -35,7 +24,9 @@ import Icon from './Icon.astro';
         navItems.map((item) => (
           <a
             href={item.href}
-            class="rounded-lg px-3 py-2 text-sm text-ink-300 transition hover:bg-ink-850 hover:text-ink-100"
+            data-nav-link={item.href.slice(1)}
+            aria-current="false"
+            class="rounded-lg px-3 py-2 text-sm text-ink-300 transition hover:bg-ink-850 hover:text-ink-100 aria-[current=location]:bg-ink-850 aria-[current=location]:text-ink-100"
           >
             {item.label}
           </a>
@@ -68,8 +59,8 @@ import Icon from './Icon.astro';
         aria-controls="mobile-nav"
         aria-label="打开菜单"
       >
-        <Icon name="menu" class="size-5 md:hidden" />
-        <Icon name="close" class="hidden size-5 md:hidden" />
+        <Icon name="menu" class="size-5" />
+        <Icon name="close" class="hidden size-5" />
       </button>
     </div>
   </div>
@@ -80,7 +71,8 @@ import Icon from './Icon.astro';
         navItems.map((item) => (
           <a
             href={item.href}
-            class="rounded-lg px-2 py-3 text-sm text-ink-200 transition hover:bg-ink-850"
+            data-nav-link={item.href.slice(1)}
+            class="rounded-lg px-2 py-3 text-sm text-ink-200 transition hover:bg-ink-850 aria-[current=location]:bg-ink-850 aria-[current=location]:text-ink-100"
           >
             {item.label}
           </a>
@@ -134,5 +126,56 @@ import Icon from './Icon.astro';
       setOpen(false);
       toggle.focus();
     });
+  }
+
+  // 导航滚动高亮：取「顶部已越过阈值线」且位置最靠下的章节。
+  // 注意不能依赖 navItems 的顺序 —— 页面上 faq 位于 roadmap 之前，与导航顺序相反。
+  const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'));
+  const sections = navLinks
+    .map((link) => document.getElementById(link.dataset.navLink ?? ''))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (navLinks.length > 0 && sections.length > 0) {
+    const THRESHOLD = 96; // 略大于固定头部高度（h-16 = 64px）
+    let frame = 0;
+
+    const paint = () => {
+      frame = 0;
+      let current: string | undefined;
+      let deepest = Number.NEGATIVE_INFINITY;
+
+      for (const section of sections) {
+        const top = section.getBoundingClientRect().top;
+        if (top - THRESHOLD <= 0 && top > deepest) {
+          deepest = top;
+          current = section.id;
+        }
+      }
+
+      // 滚到底部时强制高亮位置最靠下的那一节，避免末节太矮永远选不中
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
+        let lowest = Number.NEGATIVE_INFINITY;
+        for (const section of sections) {
+          const top = section.getBoundingClientRect().top;
+          if (top > lowest) {
+            lowest = top;
+            current = section.id;
+          }
+        }
+      }
+
+      for (const link of navLinks) {
+        link.setAttribute('aria-current', link.dataset.navLink === current ? 'location' : 'false');
+      }
+    };
+
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(paint);
+    };
+
+    paint();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
   }
 </script>

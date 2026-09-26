@@ -21,11 +21,14 @@ import ControlPlaneMock from './ControlPlaneMock.astro';
       <h1
         class="mt-6 text-4xl leading-[1.12] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl"
       >
+        {/*
+          CJK 默认可在任意字符间断行，text-balance 会把「工作型 AI 智 / 能体的应用。」
+          拆成两行。只给「智能体」加 nowrap 把这个词锁住，断行位置交给浏览器。
+        */}
         <span class="block text-ink-100">Paperclip 是用来管理</span>
         <span class="block"
-          ><span class="text-gradient">工作型 AI 智能体</span><span class="text-ink-100"
-            >的应用。</span
-          ></span
+          ><span class="text-gradient">工作型 <span class="whitespace-nowrap">AI 智能体</span></span
+          ><span class="text-ink-100">的应用。</span></span
         >
       </h1>
 

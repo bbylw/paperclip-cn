@@ -21,11 +21,17 @@ const community = [
 >
   <div class="grid gap-6 lg:grid-cols-[1.25fr_1fr]">
     <div class="card overflow-hidden p-0" data-reveal>
+      {/*
+        封面直接用 poster 属性。不用 <img loading="lazy"> 垫底：<video> 在没有帧时
+        会绘制不透明黑底，把下层图片完全盖住；动态赋值 video.poster 在 Chromium 上
+        又不触发重绘。19 KB 的封面（原本 117 KB）不值得为它引入脆弱技巧。
+      */}
       <video
         controls
         preload="none"
         playsinline
         poster="/images/banner.webp"
+        aria-label="Paperclip 演示：智能体团队从目标到产出的完整闭环"
         class="aspect-video w-full bg-ink-950 object-cover"
       >
         <source src={links.demoVideo} type="video/mp4" />

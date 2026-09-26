@@ -1,7 +1,6 @@
 ---
 import Section from './Section.astro';
-import { faqs } from '../data/faq';
-import FaqAccordion from './islands/FaqAccordion';
+import FaqAccordion from './FaqAccordion.astro';
 ---
 
 <Section
@@ -11,6 +10,6 @@ import FaqAccordion from './islands/FaqAccordion';
   lead="部署形态、多公司、与其他智能体的区别，以及为什么不用 Asana / Trello。"
 >
   <div data-reveal>
-    <FaqAccordion client:visible items={faqs} />
+    <FaqAccordion />
   </div>
 </Section>

@@ -1,0 +1,34 @@
+---
+/**
+ * 站点标识 —— 中立的「组织架构」几何标记。
+ *
+ * 刻意不复制官方 logo（橙色回形针）：Paperclip 的名称与图形商标归
+ * Paperclip Labs, Inc 所有，MIT 协议不包含商标。本站为非官方社区翻译站，
+ * 使用自有标识以避免商标冒用。
+ */
+interface Props {
+  class?: string;
+  size?: number;
+}
+
+const { class: className = 'size-5', size } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 32 32"
+  width={size}
+  height={size}
+  fill="none"
+  class={className}
+  aria-hidden="true"
+>
+  <circle cx="16" cy="7.5" r="3.2" fill="var(--color-brand-400)"></circle>
+  <circle cx="7" cy="24.5" r="2.7" stroke="var(--color-ink-500)" stroke-width="1.9"></circle>
+  <circle cx="25" cy="24.5" r="2.7" stroke="var(--color-ink-500)" stroke-width="1.9"></circle>
+  <path
+    d="M16 10.7v4.1M16 14.8H7v7M16 14.8h9v7"
+    stroke="var(--color-ink-500)"
+    stroke-width="1.9"
+    stroke-linecap="round"></path>
+</svg>

@@ -1,23 +1,36 @@
 /**
  * 站点级元数据与导航配置
- * 所有文案均来自 Paperclip 项目 README（中文版）。
+ *
+ * 域名唯一来源：`import.meta.env.SITE` 由 astro.config.mjs 的 `site` 注入
+ * （即环境变量 SITE_URL）。切勿在此硬编码域名。
  */
+
+const configuredSite = import.meta.env.SITE;
+
+/** 去掉结尾斜杠，便于拼接路径 */
+const siteUrl = (configuredSite ?? 'https://paperclip-cn.example.com').replace(/\/+$/, '');
+
 export const site = {
   name: 'Paperclip',
   title: 'Paperclip —— 用来管理工作型 AI 智能体的应用',
   description:
     '开源的 AI 智能体团队协作编排工具。带上你的智能体，分配目标，在仪表盘里跟踪工作进度与成本开销。管理的是业务目标，而不是 pull request。',
-  url: 'https://paperclip.ing',
+  url: siteUrl,
   ogImage: '/images/og.jpg',
+} as const;
+
+/** 官方主站（非本项目运营方） */
+export const upstream = {
+  name: 'Paperclip Labs, Inc',
+  website: 'https://paperclip.ing',
+  repo: 'https://github.com/paperclipai/paperclip',
 } as const;
 
 export const links = {
   docs: 'https://docs.paperclip.ing',
-  github: 'https://github.com/paperclipai/paperclip',
-  install: 'https://paperclip.ing/install.sh',
+  github: upstream.repo,
   discord: 'https://discord.gg/m4HZY7xNG3',
   twitter: 'https://x.com/papercliping',
-  website: 'https://paperclip.ing',
   license: 'https://github.com/paperclipai/paperclip/blob/master/LICENSE',
   contributing: 'https://github.com/paperclipai/paperclip/blob/master/CONTRIBUTING.md',
   roadmap: 'https://github.com/paperclipai/paperclip/blob/master/ROADMAP.md',
@@ -27,8 +40,7 @@ export const links = {
   issues: 'https://github.com/paperclipai/paperclip/issues',
   discussions: 'https://github.com/paperclipai/paperclip/discussions',
   awesome: 'https://github.com/gsxdsm/awesome-paperclip',
-  observability:
-    'https://github.com/paperclipai/paperclip/blob/master/doc/observability.md',
+  observability: 'https://github.com/paperclipai/paperclip/blob/master/doc/observability.md',
   telemetryContract:
     'https://github.com/paperclipai/paperclip/blob/master/packages/shared/src/telemetry/README.md',
   telemetryWorkflow:

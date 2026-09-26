@@ -15,7 +15,10 @@ export const roadmap = [
   { status: 'done', label: '更完善的预算' },
   { status: 'done', label: '智能体评审与审批' },
   { status: 'done', label: '多人类用户' },
-  { status: 'done', label: '云端 / 沙箱智能体（e2b、Cloudflare、Daytona、Modal、Novita、自托管 Kubernetes）' },
+  {
+    status: 'done',
+    label: '云端 / 沙箱智能体（e2b、Cloudflare、Daytona、Modal、Novita、自托管 Kubernetes）',
+  },
   { status: 'done', label: '产物与工作成果' },
   { status: 'done', label: '深度规划（规划模式、带版本的计划、计划审批）' },
   { status: 'done', label: '强制结果（看门狗、恢复动作、复核关卡）' },
@@ -36,8 +39,30 @@ export const roadmap = [
   { status: 'planned', label: '关联应用（一键集成，例如 Vercel）' },
 ] as const satisfies readonly RoadmapItem[];
 
+/**
+ * 状态元数据 —— 路线图呈现的唯一来源。
+ * label 供筛选按钮与图例使用；chip / dot / text 为该状态的呈现类名。
+ */
 export const roadmapMeta = {
-  done: { label: '已上线', mark: '✅' },
-  active: { label: '进行中', mark: '🟡' },
-  planned: { label: '规划中', mark: '⚪' },
-} as const satisfies Record<RoadmapStatus, { label: string; mark: string }>;
+  done: {
+    label: '已上线',
+    chip: 'text-mint-300 ring-mint-500/30',
+    dot: 'bg-mint-400',
+    text: 'text-ink-300',
+  },
+  active: {
+    label: '进行中',
+    chip: 'text-brand-300 ring-brand-500/30',
+    dot: 'bg-brand-400',
+    text: 'text-ink-200',
+  },
+  planned: {
+    label: '规划中',
+    chip: 'text-ink-400 ring-ink-600/60',
+    dot: 'bg-ink-500',
+    text: 'text-ink-400',
+  },
+} as const satisfies Record<
+  RoadmapStatus,
+  { label: string; chip: string; dot: string; text: string }
+>;

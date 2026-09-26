@@ -3,35 +3,33 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Paperclip 中文官网 —— 用来管理工作型 AI 智能体的开源编排平台",
+  "description": "Paperclip 社区中文翻译站（非官方）—— 用来管理工作型 AI 智能体的开源编排平台",
+  "license": "MIT",
   "engines": {
     "node": ">=22.12.0"
   },
+  "packageManager": "bun@1.4.2",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
     "check": "astro check && astro build",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^7.0.0",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
-    "astro": "^7.3.5",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
-  },
-  "allowScripts": {
-    "esbuild": true
+    "astro": "^7.3.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@astrojs/sitemap": "^3.7.4",
+    "@biomejs/biome": "^2.3.4",
     "@tailwindcss/vite": "^4.3.3",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
     "tailwindcss": "^4.3.3",
     "typescript": "6.0.3"
   }

@@ -1,9 +1,8 @@
 ---
 import Section from './Section.astro';
-import { quickstartSnippets, requirements } from '../data/quickstart';
-import { npmRegistryTip } from '../data/telemetry';
+import { quickstartSnippets, requirements, npmRegistryTip, devResources } from '../data/quickstart';
 import { links } from '../data/site';
-import CodeBlock from './islands/CodeBlock';
+import CodeBlock from './CodeBlock.astro';
 import Icon from './Icon.astro';
 ---
 
@@ -17,7 +16,7 @@ import Icon from './Icon.astro';
     {
       quickstartSnippets.map((snippet, i) => (
         <div class="min-w-0" data-reveal style={`--reveal-delay:${(i % 2) * 70}ms`}>
-          <CodeBlock client:visible code={snippet.code} title={snippet.title} note={snippet.note} />
+          <CodeBlock code={snippet.code} title={snippet.title} note={snippet.note} />
         </div>
       ))
     }
@@ -78,4 +77,30 @@ import Icon from './Icon.astro';
       </p>
     </aside>
   </div>
+
+  <nav
+    aria-label="上游文档"
+    class="mt-4 grid gap-3 sm:grid-cols-3"
+    data-reveal
+  >
+    {
+      devResources.map((item) => (
+        <a
+          href={item.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="card card-hover group flex items-center gap-3 px-4 py-3.5"
+        >
+          <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-ink-850 font-mono text-[10px] text-ink-400 ring-1 ring-ink-700">
+            MD
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block font-mono text-xs text-ink-100">{item.label}</span>
+            <span class="block truncate text-xs text-ink-500">{item.hint}</span>
+          </span>
+          <Icon name="arrow" class="size-4 shrink-0 text-ink-600 transition group-hover:text-brand-400" />
+        </a>
+      ))
+    }
+  </nav>
 </Section>

@@ -4,19 +4,15 @@ interface Props {
   eyebrow: string;
   title: string;
   lead?: string;
-  align?: 'left' | 'center';
   class?: string;
 }
 
-const { id, eyebrow, title, lead, align = 'left', class: className = '' } = Astro.props;
+const { id, eyebrow, title, lead, class: className = '' } = Astro.props;
 ---
 
 <section id={id} class:list={['scroll-mt-24 py-16 sm:py-24', className]}>
   <div class="shell">
-    <header
-      class:list={['max-w-2xl', align === 'center' && 'mx-auto text-center']}
-      data-reveal
-    >
+    <header class="max-w-2xl" data-reveal>
       <p class="font-mono text-xs tracking-[0.3em] text-brand-400 uppercase">{eyebrow}</p>
       <h2 class="mt-4 text-3xl font-semibold tracking-tight text-balance text-ink-100 sm:text-4xl">
         {title}

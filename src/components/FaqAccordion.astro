@@ -1,0 +1,32 @@
+---
+import { faqs } from '../data/faq';
+import Icon from './Icon.astro';
+
+/**
+ * 原生 <details>/<summary> 手风琴 —— 零 JavaScript。
+ *
+ * 为什么不用框架组件：折叠态的面板在无 JS 时高度为 0 且点击无响应，
+ * 5 条 FAQ 里有 4 条将永久不可读。原生 details 默认可展开，
+ * 配合 name 属性还能获得浏览器内建的互斥行为。
+ */
+---
+
+<div class="grid gap-3">
+  {
+    faqs.map((item, index) => (
+      <details class="faq-item card overflow-hidden" name="faq" open={index === 0}>
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left text-sm text-ink-100 transition hover:text-white sm:px-6 sm:text-base">
+          <span class="font-medium">{item.question}</span>
+          <span class="faq-marker" aria-hidden="true">
+            <Icon name="chevron" class="size-3.5" />
+          </span>
+        </summary>
+        <div class="faq-body">
+          <p class="px-5 pb-5 text-sm leading-relaxed text-ink-400 sm:px-6 sm:text-[15px]">
+            {item.answer}
+          </p>
+        </div>
+      </details>
+    ))
+  }
+</div>
