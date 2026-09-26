@@ -12,7 +12,7 @@ export interface Snippet {
 export const quickstartSnippets = [
   {
     id: 'install',
-    title: '一键安装（推荐）',
+    title: '一键安装',
     lang: 'bash',
     code: `curl -fsSLO https://paperclip.ing/install.sh
 curl -fsSLO https://paperclip.ing/install.sh.sha256

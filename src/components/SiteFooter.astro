@@ -15,7 +15,6 @@ const resources = [
   { label: '安装指南', href: links.installing },
   { label: '开发指南', href: links.developing },
   { label: 'CLI 参考', href: links.cli },
-  { label: '路线图', href: links.roadmap },
   { label: '许可证', href: links.license },
 ];
 
@@ -110,9 +109,16 @@ const year = new Date().getFullYear();
     >
       <p>翻译与站点代码 © {year} Paperclip 中文社区翻译站贡献者 · MIT</p>
       <p>
-        <a href={upstream.website} target="_blank" rel="noreferrer noopener" class="link"
-          >{upstream.website}</a
+        <a
+          href={upstream.website}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="link"
+          aria-label="Paperclip 官方网站（英文）"
         >
+          {upstream.website.replace(/^https:\/\//, '')}
+          <span aria-hidden="true">↗</span>
+        </a>
       </p>
     </div>
   </div>
