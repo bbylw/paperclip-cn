@@ -3,20 +3,20 @@ import { links, navItems, site, upstream } from '../data/site';
 import Logo from './Logo.astro';
 
 const community = [
-  { label: 'Discord', href: links.discord, hint: '加入社区' },
-  { label: 'Twitter / X', href: links.twitter, hint: '关注更新与公告' },
-  { label: 'GitHub Issues', href: links.issues, hint: '缺陷与功能请求' },
-  { label: 'GitHub Discussions', href: links.discussions, hint: '想法与 RFC' },
-  { label: 'awesome-paperclip', href: links.awesome, hint: '发现插件与更多' },
+  { label: 'Discord', href: links.discord },
+  { label: 'Twitter / X', href: links.twitter },
+  { label: 'GitHub Issues', href: links.issues },
+  { label: 'GitHub Discussions', href: links.discussions },
+  { label: 'awesome-paperclip', href: links.awesome },
 ];
 
 const resources = [
-  { label: '文档', href: links.docs, hint: 'docs.paperclip.ing' },
-  { label: '安装指南', href: links.installing, hint: 'INSTALLING.md' },
-  { label: '开发指南', href: links.developing, hint: 'DEVELOPING.md' },
-  { label: 'CLI 参考', href: links.cli, hint: 'CLI.md' },
-  { label: '路线图', href: links.roadmap, hint: 'ROADMAP.md' },
-  { label: '许可证', href: links.license, hint: 'MIT' },
+  { label: '文档', href: links.docs },
+  { label: '安装指南', href: links.installing },
+  { label: '开发指南', href: links.developing },
+  { label: 'CLI 参考', href: links.cli },
+  { label: '路线图', href: links.roadmap },
+  { label: '许可证', href: links.license },
 ];
 
 const year = new Date().getFullYear();
@@ -27,7 +27,7 @@ const year = new Date().getFullYear();
     {/*
       原来是 3 列（1.4fr / 1fr / 1fr）且全部左对齐，右半边约 70% 是空的：
       导航列文字只占 56px，社区列结束于 x=1150，右侧再空 170px。
-      现在改成 4 列等宽，并且三列都带 hint——语法统一，不再像两个不同组件。
+      现在改成 4 列等宽，三列统一为无注释的单行链接。
     */}
     <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
       <div>
@@ -74,12 +74,9 @@ const year = new Date().getFullYear();
                   href={item.href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  class="group flex min-h-7 items-baseline gap-2 text-sm text-ink-300 transition-colors hover:text-brand-300"
+                  class="flex min-h-7 items-center text-sm text-ink-300 transition-colors hover:text-brand-300"
                 >
                   {item.label}
-                  <span class="truncate font-mono text-xs text-ink-400 transition-colors group-hover:text-ink-400">
-                    {item.hint}
-                  </span>
                 </a>
               </li>
             ))
@@ -97,12 +94,9 @@ const year = new Date().getFullYear();
                   href={item.href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  class="group flex min-h-7 items-baseline gap-2 text-sm text-ink-300 transition-colors hover:text-brand-300"
+                  class="flex min-h-7 items-center text-sm text-ink-300 transition-colors hover:text-brand-300"
                 >
                   {item.label}
-                  <span class="truncate text-xs text-ink-400 transition-colors group-hover:text-ink-400">
-                    {item.hint}
-                  </span>
                 </a>
               </li>
             ))
