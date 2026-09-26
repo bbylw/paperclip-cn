@@ -58,9 +58,19 @@ bun run format             # Biome 格式化
 
 ## 部署
 
-站点为纯静态输出，`dist/` 可托管到任意静态平台（Cloudflare Pages / Vercel / Netlify / GitHub Pages）。
+本站通过 GitHub Actions 自动部署到 GitHub Pages（`deploy.yml`，push 到 `main` 即发布）。
 
-**部署前必须设置 `SITE_URL`**——它是全站域名的唯一来源，驱动 canonical、`og:url`、sitemap 与 `robots.txt`：
+- 生产域名：**https://paperclip.ndjp.net**（构建时注入 `SITE_URL`，见 `deploy.yml`）
+- `public/CNAME` 随构建输出到 `dist/CNAME`，Pages 用它识别自定义域
+- 纯静态输出，也可托管到 Cloudflare Pages / Vercel / Netlify 等任意静态平台
+
+**首次部署前必须手动做两件事**（Actions 做不了）：
+
+1. 仓库 Settings → Pages → Build and deployment → Source 选 **GitHub Actions**
+2. DNS 加一条 CNAME：`paperclip` → `bbylw.github.io`，
+   然后在 Pages 设置里填 Custom domain `paperclip.ndjp.net` 并勾选 Enforce HTTPS
+
+本地构建其他域名时：
 
 ```bash
 SITE_URL=https://你的域名 bun run build

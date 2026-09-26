@@ -1,0 +1,72 @@
+name: Deploy to GitHub Pages
+
+# 生产域名固定为自定义域。SITE_URL 驱动 canonical / og:url / sitemap / robots.txt，
+# 必须与 Pages 的自定义域一致，否则搜索引擎会索引到错误的地址。
+# 切勿设为 https://paperclip.ing（官方域名）。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建（生产域名）
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://paperclip.ndjp.net
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - name: 安装依赖
+        run: bun install --frozen-lockfile
+
+      - name: Lint（Biome）
+        run: bun run lint
+
+      - name: 类型检查（astro check）
+        run: bun run typecheck
+
+      - name: 生产构建
+        run: bun run build
+
+      - name: 校验生产域名已注入
+        run: |
+          test -f dist/index.html
+          test -f dist/404.html
+          test -f dist/robots.txt
+          test -f dist/sitemap-index.xml
+          test -f dist/CNAME
+          grep -q "https://paperclip.ndjp.net" dist/robots.txt
+          grep -q "https://paperclip.ndjp.net/" dist/index.html
+          grep -q "paperclip.ndjp.net" dist/CNAME
+
+      - name: 上传 Pages 产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+  deploy:
+    name: 发布到 Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署
+        id: deployment
+        uses: actions/deploy-pages@v4
