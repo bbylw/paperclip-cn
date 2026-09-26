@@ -22,9 +22,24 @@ import Icon from './Icon.astro';
           </span>
         </summary>
         <div class="faq-body">
-          <p class="px-5 pb-5 text-sm leading-relaxed text-ink-400 sm:px-6 sm:text-[15px]">
-            {item.answer}
-          </p>
+          {
+            /* 答案可以是单段，也可以是多点列表。长答案拆成点，
+               避免 120 字一整段在 1216px 宽下排成 3 行 50 字长行。 */
+            Array.isArray(item.answer) ? (
+              <ul class="space-y-2 px-5 pb-5 sm:px-6">
+                {item.answer.map((point) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-relaxed text-ink-400 sm:text-[15px]">
+                    <span class="mt-[0.65em] size-1 shrink-0 rounded-full bg-ink-600" aria-hidden="true" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="max-w-3xl px-5 pb-5 text-sm leading-relaxed text-ink-400 sm:px-6 sm:text-[15px]">
+                {item.answer}
+              </p>
+            )
+          }
         </div>
       </details>
     ))

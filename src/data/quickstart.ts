@@ -65,8 +65,8 @@ pnpm dev`,
     title: '切换到认证 / 私有模式',
     lang: 'bash',
     code: `paperclipai onboard --yes --bind lan
-# 或：
-paperclipai onboard --yes --bind tailnet`,
+# 如需 Tailscale 私有网络，把 lan 换成 tailnet：
+# paperclipai onboard --yes --bind tailnet`,
     note: '快速开始默认采用可信本地回环模式；显式选择绑定预设即可启用认证 / 私有模式。',
   },
 ] as const satisfies readonly Snippet[];

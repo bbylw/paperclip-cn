@@ -131,8 +131,9 @@ public/                    # favicon、apple-touch-icon、og.jpg、封面、运�
 ### eyebrow 克制
 
 14 个区块全部挂小标签会变成模板噪音，读者不再把它当分类信号。
-**全站只用 5 处**：`QUICKSTART` · `FOUR PILLARS` · `UNDER THE HOOD`（`Section.astro` 调用处）
-以及 Hero 状态条与页脚「非官方声明」标题。其余区块只靠标题定位。
+**全站只用 3 处**：`FOUR PILLARS` · `UNDER THE HOOD` · `QUICKSTART`。
+「FAQ」这种与标题同义的、「FIT CHECK」这种标题本身就是完整句子的，
+一律不挂 eyebrow（`Section.astro` 的注释里写死了这条约定）。
 
 ### 布局家族去重
 
@@ -151,10 +152,18 @@ public/                    # favicon、apple-touch-icon、og.jpg、封面、运�
 | 底层架构 | 网格图 + 连接线 + 2 列详情卡 |
 | 不是什么 | 无卡片划掉声明（语义上就该是异类） |
 | 快速开始 | 1 主卡通栏 + 2×2 备选 + 3 列底部 |
-| FAQ | 原生 details 手风琴 |
+| FAQ | 原生 details 手风琴（长答案拆成多点列表） |
 | 路线图 | 单列状态列表（默认折叠已上线） |
 | 遥测 | 2 列卡 + 底部 chip 行 |
 | 社区 | 视频 + 方形 tile 网格 |
+
+### 交互细节
+
+- 移动端菜单：`max-height` 过渡（`grid 0fr` 在含 padding 的容器上会解析成内容高度，不可靠）。
+- 头部滚动态：单个 `.is-scrolled` 类。不要靠 JS 切 Tailwind 的 `border-ink-800` —— 它和 `border-transparent` 同层，后者在层叠顺序里赢，切了也看不见。
+- `backdrop-filter` 只写标准属性，前缀由 Lightning CSS 自动补 —— 手写 `-webkit-` 会被当成重复声明吃掉标准属性。
+- Chromium 滚动条：`scrollbar-color` 只对 Firefox 生效，另需 `::-webkit-scrollbar` 一套。
+- FAQ 答案支持 `string | string[]`，长答案拆成多点列表。
 
 ## 设计取舍
 

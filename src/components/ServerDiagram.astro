@@ -4,32 +4,36 @@ import Icon from './Icon.astro';
 ---
 
 {/*
- * 箭头方向原来朝下（服务器 ↓ 客户端），语义与实际相反：
- * 实际关系是「外部智能体接入服务器」。改为朝上。
- * 客户端运行时原来画在服务器卡片的边框内部，视觉上变成服务器的子部件，
- * 现在移出卡片，用连接线表达「接入」而非「包含」。
+ * 架构总览图只做「索引」：编号 + 英文原名。
+ * 中文名与说明归下方 12 张详情卡，避免同一批 12 项在 200px 内出现两次。
+ * 编号与详情卡一一对应，扫读时可互相定位。
+ *
+ * 箭头朝上：实际关系是「外部智能体接入服务器」，不是服务器向下产生智能体。
+ * 客户端运行时放在服务器卡片之外，用连接线表达「接入」而非「包含」。
  */}
 <div class="card overflow-hidden" data-reveal>
   <div class="flex items-center justify-between border-b border-ink-800 px-5 py-3.5">
-    <span class="font-mono text-xs tracking-[0.18em] text-ink-400 uppercase">Paperclip Server</span>
+    <span class="font-mono text-xs tracking-[0.18em] text-ink-400 uppercase"
+      >Paperclip Server</span
+    >
     <span class="chip font-mono">12 subsystems</span>
   </div>
 
-  <ul class="grid gap-px bg-ink-800 sm:grid-cols-2 lg:grid-cols-4">
+  <ol class="grid gap-px bg-ink-800 sm:grid-cols-2 lg:grid-cols-4">
     {
-      serverModules.map((mod) => (
-        <li class="flex flex-col justify-center bg-ink-900 px-4 py-4 transition-colors hover:bg-ink-850">
-          <p class="font-mono text-xs text-ink-200">{mod.en}</p>
-          <p class="mt-1 text-sm text-ink-400">{mod.zh}</p>
+      serverModules.map((mod, i) => (
+        <li class="flex items-center gap-3 bg-ink-900 px-4 py-3.5 transition-colors hover:bg-ink-850">
+          <span class="ordinal">{String(i + 1).padStart(2, '0')}</span>
+          <span class="font-mono text-xs text-ink-200">{mod.en}</span>
         </li>
       ))
     }
-  </ul>
+  </ol>
 </div>
 
 <div class="mt-3 flex flex-col items-center gap-1.5" aria-hidden="true">
   <span class="h-6 w-px bg-ink-700"></span>
-  <span class="text-ink-600">
+  <span class="text-ink-500">
     <Icon name="arrow" class="size-4 rotate-180" />
   </span>
   <span class="text-xs text-ink-400">心跳唤醒 · 接收任务</span>

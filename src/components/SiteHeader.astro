@@ -6,7 +6,7 @@ import Logo from './Logo.astro';
 
 <header
   id="site-header"
-  class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-300"
+  class="fixed inset-x-0 top-0 z-50 transition-colors duration-300"
 >
   <div class="shell flex h-16 items-center justify-between gap-6">
     <a
@@ -67,7 +67,7 @@ import Logo from './Logo.astro';
 
   <div
     id="mobile-nav"
-    class="hidden border-t border-ink-800 bg-ink-950/95 backdrop-blur md:hidden"
+    class="border-t border-ink-800 bg-ink-950/95 backdrop-blur md:hidden"
   >
     <nav class="shell flex flex-col gap-1 py-4" aria-label="移动端导航">
       {
@@ -100,10 +100,7 @@ import Logo from './Logo.astro';
 
   if (header) {
     const onScroll = () => {
-      const scrolled = window.scrollY > 12;
-      header.classList.toggle('border-ink-800', scrolled);
-      header.classList.toggle('bg-ink-950/80', scrolled);
-      header.classList.toggle('backdrop-blur-xl', scrolled);
+      header.classList.toggle('is-scrolled', window.scrollY > 12);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -112,7 +109,8 @@ import Logo from './Logo.astro';
   if (toggle && mobileNav) {
     const [openIcon, closeIcon] = Array.from(toggle.querySelectorAll('svg'));
     const setOpen = (open: boolean) => {
-      mobileNav.classList.toggle('hidden', !open);
+      // 收起/展开由 CSS grid 过渡承担，这里只翻转 .open
+      mobileNav.classList.toggle('open', open);
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
       openIcon?.classList.toggle('hidden', open);

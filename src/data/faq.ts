@@ -1,13 +1,17 @@
 export interface FaqItem {
   question: string;
-  answer: string;
+  /** 单段回答，或拆成多点列表（长答案用列表，避免 120 字一整段） */
+  answer: string | readonly string[];
 }
 
 export const faqs = [
   {
     question: '典型的部署形态是怎样的？',
-    answer:
-      '在本地，单个 Node.js 进程管理一个内置的 Postgres 与本地文件存储。生产环境则把它指向你自己的 Postgres，按需自行部署。配置好项目、智能体与目标——其余的交给智能体。如果你是独立开发者，可以用 Tailscale 随时随地访问 Paperclip。等需要了，再部署到比如 Vercel 上。',
+    answer: [
+      '本地：单个 Node.js 进程管理内置的 Postgres 与本地文件存储。',
+      '生产：把数据库指向你自己的 Postgres，按需自行部署。配置好项目、智能体与目标，其余的交给智能体。',
+      '个人：独立开发者可以用 Tailscale 随时随地访问；等需要了，再部署到比如 Vercel 上。',
+    ],
   },
   {
     question: '我能运营多家公司吗？',

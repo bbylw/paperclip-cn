@@ -110,6 +110,27 @@
   * {
     scrollbar-color: var(--color-ink-600) transparent;
   }
+
+  /* Chromium / WebKit：scrollbar-color 只对 Firefox 生效。
+     不加的话 Chrome 用默认亮灰滚动条，在深色页上非常扎眼。 */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-ink-700);
+    border-radius: 8px;
+    border: 2px solid var(--color-ink-950);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-600);
+  }
 }
 
 /* ==================================================================
@@ -369,28 +390,43 @@
     }
   }
 
-  /* ---------- 代码块横向溢出渐隐提示 ---------- */
-  /* 已弃用：代码块改为自动换行 + 悬挂缩进，不再横向滚动。
-     保留规则以防未来有确实需要滚动的场景。 */
-  .code-scroll {
-    position: relative;
+  /* ---------- 站点头部滚动态 ---------- */
+  /* 滚动后加底边 + 毛玻璃。不能靠 JS 切 Tailwind 的 border-ink-800：
+     它和基础的 border-transparent 同层，transparent 在层叠顺序里赢，
+     切了也看不见。用一个 .is-scrolled 状态类替代三个分散的 toggle。 */
+  #site-header {
+    border-bottom: 1px solid transparent;
   }
 
-  .code-scroll::after {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    right: 0;
-    width: 3rem;
-    pointer-events: none;
-    background: linear-gradient(to right, transparent, var(--color-ink-900) 85%);
-    opacity: 0;
-    transition: opacity 0.2s ease;
+  #site-header.is-scrolled {
+    border-bottom-color: var(--color-ink-800);
+    background-color: color-mix(in oklab, var(--color-ink-950) 80%, transparent);
+    /* 只写标准属性，前缀由 Lightning CSS 自动补。
+       手写 -webkit-backdrop-filter 会被当成重复声明吃掉标准属性。 */
+    backdrop-filter: blur(24px);
   }
 
-  .code-scroll[data-overflowing='true']::after {
-    opacity: 1;
+  /* ---------- 移动端导航折叠 ---------- */
+  /* max-height 过渡。grid 0fr 在内容含 padding 的容器上会解析成内容高度，
+     不如 max-height 可靠。默认收起（含无 JS），JS 只需翻转 .open。 */
+  #mobile-nav {
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition:
+      max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s 0.28s;
   }
+
+  #mobile-nav.open {
+    /* 菜单实际约 370px，留足余量；过大只影响过渡时长感知 */
+    max-height: 28rem;
+    visibility: visible;
+    transition: max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* 代码块内部不再横向滚动（自动换行），故不需要单独的细滚动条。
+     页面级 *::-webkit-scrollbar 已覆盖所有可滚动容器。 */
 }
 
 /* ==================================================================

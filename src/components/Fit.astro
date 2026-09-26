@@ -7,19 +7,23 @@ import Icon from './Icon.astro';
 
 <Section
   id="fit"
-  eyebrow="FIT CHECK"
   title="如果你符合以下情况，Paperclip 就很适合你"
   lead="这几条来自真实的「20 个终端同时开着」式工作方式——如果你中了几条，编排层就是你缺失的那块。"
 >
   <ul class="grid gap-3 md:grid-cols-2">
     {
+      /* 7 条排 2 列时末行只剩 1 格。最后一条最短，让它横跨两列收尾，
+         既填满网格又形成视觉上的「总结句」。 */
       fitChecklist.map((item, i) => (
         <li
-          class="card flex items-start gap-3 p-4"
+          class:list={[
+            'card flex items-start gap-3 p-4',
+            i === fitChecklist.length - 1 && 'md:col-span-2 md:items-center md:justify-center md:gap-2.5 md:py-3.5 md:text-center',
+          ]}
           data-reveal
           style={`--reveal-delay:${(i % 2) * 70}ms`}
         >
-          <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-mint-500/15 text-mint-400">
+          <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-mint-500/15 text-mint-400 md:mt-0">
             <Icon name="check" class="size-3.5" size={14} />
           </span>
           <p class="text-sm leading-relaxed text-ink-300">

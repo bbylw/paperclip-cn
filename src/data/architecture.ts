@@ -1,22 +1,21 @@
-/** 控制平面子系统（对应架构图 3 × 4 网格），保留英文术语并补充中文说明 */
+/** 控制平面子系统索引（英文原名 + 编号，中文解释见下方详情卡） */
 export interface ServerModule {
   en: string;
-  zh: string;
 }
 
 export const serverModules = [
-  { en: 'Identity & Access', zh: '身份与访问' },
-  { en: 'Work & Tasks', zh: '工作与任务' },
-  { en: 'Heartbeat Execution', zh: '心跳执行' },
-  { en: 'Governance & Approvals', zh: '治理与审批' },
-  { en: 'Org Chart & Agents', zh: '组织架构图与智能体' },
-  { en: 'Workspaces & Runtime', zh: '工作区与运行时' },
-  { en: 'Plugins', zh: '插件' },
-  { en: 'Budget & Costs', zh: '预算与成本' },
-  { en: 'Routines & Schedules', zh: '例程与排程' },
-  { en: 'Secrets & Storage', zh: '密钥与存储' },
-  { en: 'Activity & Events', zh: '活动与事件' },
-  { en: 'Company Portability', zh: '公司可移植性' },
+  { en: 'Identity & Access' },
+  { en: 'Work & Tasks' },
+  { en: 'Heartbeat Execution' },
+  { en: 'Governance & Approvals' },
+  { en: 'Org Chart & Agents' },
+  { en: 'Workspaces & Runtime' },
+  { en: 'Plugins' },
+  { en: 'Budget & Costs' },
+  { en: 'Routines & Schedules' },
+  { en: 'Secrets & Storage' },
+  { en: 'Activity & Events' },
+  { en: 'Company Portability' },
 ] as const satisfies readonly ServerModule[];
 
 /** 架构图下方的智能体接入方式（客户端运行时） */
